@@ -4,15 +4,15 @@ import { Flow } from "./core";
 import { authorize } from "./layers";
 
 export function publicFlow<T extends Record<string, any> = {}>(): Flow<
-	T,
-	T,
-	Identity
+  T,
+  T,
+  Identity
 > {
-	return new Flow([]);
+  return new Flow([]);
 }
 
 export function defaultFlow<U extends UserWithRoles>(
-	check?: (u: UserWithRoles, ctx: any) => u is U,
+  check?: (u: UserWithRoles, ctx: any) => u is U,
 ) {
-	return publicFlow().layer(authorize(check));
+  return publicFlow().layer(authorize(check));
 }
