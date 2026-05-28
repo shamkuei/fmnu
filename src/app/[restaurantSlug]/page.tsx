@@ -26,9 +26,17 @@ export default async function MenuPage({
     ...((restaurant.theme as Record<string, string>) || {}),
   };
 
+  const socials = restaurant.socialMedia as Record<string, string> | null;
+
   return (
     <div style={themeVars as React.CSSProperties}>
       <main className="mx-auto min-h-screen max-w-3xl px-4 py-8">
+        {!restaurant.isAvailable && (
+          <div className="mb-6 rounded-lg bg-destructive/10 p-3 text-center text-sm text-destructive">
+            این رستوران در حال حاضر فعال نیست
+          </div>
+        )}
+
         {restaurant.heroImageUrl && (
           <div className="mb-8 overflow-hidden rounded-2xl">
             <img
@@ -60,7 +68,61 @@ export default async function MenuPage({
         </div>
 
         {restaurant.description && (
-          <p className="mb-8 text-muted-foreground">{restaurant.description}</p>
+          <p className="mb-6 text-muted-foreground">{restaurant.description}</p>
+        )}
+
+        {/* Contact & Socials */}
+        {(restaurant.address || restaurant.phone || socials) && (
+          <div className="mb-8 space-y-2 rounded-lg border border-border bg-card p-4">
+            {restaurant.address && (
+              <p className="text-sm text-muted-foreground">
+                <span className="font-medium text-foreground">آدرس:</span>{" "}
+                {restaurant.address}
+              </p>
+            )}
+            {restaurant.phone && (
+              <p className="text-sm text-muted-foreground">
+                <span className="font-medium text-foreground">تلفن:</span>{" "}
+                <span dir="ltr" className="inline-block">
+                  {restaurant.phone}
+                </span>
+              </p>
+            )}
+            {socials && Object.keys(socials).length > 0 && (
+              <div className="flex flex-wrap gap-3 pt-1">
+                {socials.instagram && (
+                  <a
+                    href={`https://instagram.com/${socials.instagram.replace("@", "")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-primary underline"
+                  >
+                    اینستاگرام
+                  </a>
+                )}
+                {socials.telegram && (
+                  <a
+                    href={`https://t.me/${socials.telegram.replace("@", "")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-primary underline"
+                  >
+                    تلگرام
+                  </a>
+                )}
+                {socials.whatsapp && (
+                  <a
+                    href={`https://wa.me/${socials.whatsapp.replace("+", "")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-primary underline"
+                  >
+                    واتساپ
+                  </a>
+                )}
+              </div>
+            )}
+          </div>
         )}
 
         {restaurant.categories.length === 0 && (

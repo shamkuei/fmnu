@@ -7,7 +7,10 @@ import { ForbiddenException } from "@/lib/errors";
 import { getSessionFromSessionId } from "@/modules/auth/authorizer.service";
 import {
   createRestaurant,
+  deleteRestaurant,
+  getRestaurantById,
   getRestaurantsForAdmin,
+  getRestaurantStats,
   isRestaurantAdmin,
   updateRestaurant,
 } from "@/modules/restaurants/restaurants.service";
@@ -39,6 +42,10 @@ const CreateRestaurantSchema = z.object({
   name: z.string().min(1).max(100),
   brandText: z.string().max(500).optional(),
   description: z.string().max(1000).optional(),
+  address: z.string().max(500).optional(),
+  phone: z.string().max(20).optional(),
+  socialMedia: z.record(z.string(), z.string()).optional(),
+  isAvailable: z.boolean().optional(),
 });
 
 export async function createRestaurantAction(
@@ -61,8 +68,12 @@ const UpdateRestaurantSchema = z.object({
     .optional(),
   brandText: z.string().max(500).nullable().optional(),
   description: z.string().max(1000).nullable().optional(),
-  logoUrl: z.string().url().nullable().optional(),
-  heroImageUrl: z.string().url().nullable().optional(),
+  logoUrl: z.string().max(500).nullable().optional(),
+  heroImageUrl: z.string().max(500).nullable().optional(),
+  address: z.string().max(500).nullable().optional(),
+  phone: z.string().max(20).nullable().optional(),
+  socialMedia: z.record(z.string(), z.string()).nullable().optional(),
+  isAvailable: z.boolean().optional(),
   theme: z.record(z.string(), z.string()).nullable().optional(),
 });
 
@@ -78,8 +89,33 @@ export async function updateRestaurantAction(
   return updateRestaurant(restaurantId, updates);
 }
 
+export async function deleteRestaurantAction(restaurantId: string) {
+  const user = await getAuthUser();
+  if (!user) throw new Error("NOT_AUTHENTICATED");
+  const admin = await isRestaurantAdmin(user.id, restaurantId);
+  if (!admin) throw new ForbiddenException("NOT_RESTAURANT_ADMIN");
+  await deleteRestaurant(restaurantId);
+  return { success: true };
+}
+
 export async function getMyRestaurantsAction() {
   const user = await getAuthUser();
   if (!user) return [];
   return getRestaurantsForAdmin(user.id);
+}
+
+export async function getRestaurantAction(restaurantId: string) {
+  const user = await getAuthUser();
+  if (!user) throw new Error("NOT_AUTHENTICATED");
+  const admin = await isRestaurantAdmin(user.id, restaurantId);
+  if (!admin) throw new ForbiddenException("NOT_RESTAURANT_ADMIN");
+  return getRestaurantById(restaurantId);
+}
+
+export async function getRestaurantStatsAction(restaurantId: string) {
+  const user = await getAuthUser();
+  if (!user) throw new Error("NOT_AUTHENTICATED");
+  const admin = await isRestaurantAdmin(user.id, restaurantId);
+  if (!admin) throw new ForbiddenException("NOT_RESTAURANT_ADMIN");
+  return getRestaurantStats(restaurantId);
 }

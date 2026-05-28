@@ -2,6 +2,8 @@
 
 import { cookies } from "next/headers";
 import { db } from "@/db/index";
+import { categories as categoriesTable, products as productsTable } from "@/db/schema";
+import { eq } from "drizzle-orm";
 import { ForbiddenException } from "@/lib/errors";
 import { getSessionFromSessionId } from "@/modules/auth/authorizer.service";
 import {
@@ -111,5 +113,41 @@ export async function deleteProductAction(
   const admin = await isRestaurantAdmin(user.id, restaurantId);
   if (!admin) throw new ForbiddenException("NOT_RESTAURANT_ADMIN");
   await deleteProduct(productId);
+  return { success: true };
+}
+
+export async function reorderCategoriesAction(
+  restaurantId: string,
+  orderedIds: string[],
+) {
+  const user = await getAuthUser();
+  if (!user) throw new Error("NOT_AUTHENTICATED");
+  const admin = await isRestaurantAdmin(user.id, restaurantId);
+  if (!admin) throw new ForbiddenException("NOT_RESTAURANT_ADMIN");
+
+  for (let i = 0; i < orderedIds.length; i++) {
+    await db
+      .update(categoriesTable)
+      .set({ sortOrder: i })
+      .where(eq(categoriesTable.id, orderedIds[i]));
+  }
+  return { success: true };
+}
+
+export async function reorderProductsAction(
+  restaurantId: string,
+  orderedIds: string[],
+) {
+  const user = await getAuthUser();
+  if (!user) throw new Error("NOT_AUTHENTICATED");
+  const admin = await isRestaurantAdmin(user.id, restaurantId);
+  if (!admin) throw new ForbiddenException("NOT_RESTAURANT_ADMIN");
+
+  for (let i = 0; i < orderedIds.length; i++) {
+    await db
+      .update(productsTable)
+      .set({ sortOrder: i })
+      .where(eq(productsTable.id, orderedIds[i]));
+  }
   return { success: true };
 }

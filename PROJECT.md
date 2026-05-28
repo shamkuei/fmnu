@@ -28,17 +28,18 @@ src/
 │   ├── layout.tsx                # Root layout (RTL, Vazirmatn font)
 │   ├── globals.css               # Global styles
 │   ├── auth/login/page.tsx       # Phone login page
-│   ├── [restaurantSlug]/page.tsx # Public menu view
+│   ├── [restaurantSlug]/page.tsx # Public menu view (with contact/socials)
 │   └── admin/
-│       ├── page.tsx              # Admin dashboard
+│       ├── page.tsx              # Admin dashboard (restaurant list + create)
 │       └── [restaurantId]/
-│           ├── page.tsx          # Restaurant settings
-│           └── menu/page.tsx     # Menu editor (categories & products)
+│           ├── page.tsx          # Restaurant detail (tabs: overview + edit)
+│           └── menu/page.tsx     # Menu editor (full CRUD)
 │
 ├── actions/                      # Next.js Server Actions
 │   ├── auth.ts                   # OTP request, login, logout, session
-│   ├── menu.ts                   # Menu CRUD (categories & products)
-│   └── restaurants.ts           # Restaurant CRUD
+│   ├── menu.ts                   # Menu CRUD + reorder
+│   ├── restaurants.ts           # Restaurant CRUD + stats + delete
+│   └── upload.ts                 # File upload (saves to public/uploads/)
 │
 ├── modules/                      # Domain business logic (services)
 │   ├── auth/
@@ -57,10 +58,10 @@ src/
 │   ├── phone/
 │   │   └── sender.service.ts     # SMS sending via Payamak Panel API (or console log in dev)
 │   └── restaurants/
-│       └── restaurants.service.ts # Restaurant, category, and product CRUD
+│       └── restaurants.service.ts # Restaurant, category, and product CRUD + stats
 │
 ├── db/                           # Database layer
-│   ├── schema.ts                 # Drizzle table definitions (7 tables)
+│   ├── schema.ts                 # Drizzle table definitions (8 tables)
 │   ├── relations.ts              # Drizzle relation definitions
 │   └── index.ts                  # Database client initialization
 │
@@ -73,15 +74,36 @@ src/
 │   ├── phone-zod.ts              # Zod phone number validator (Iran default)
 │   └── utils.ts                  # General utility functions
 │
-├── components/ui/                # shadcn/ui components
-│   ├── badge.tsx
-│   ├── button.tsx
-│   ├── card.tsx
-│   ├── input.tsx
-│   ├── label.tsx
-│   └── separator.tsx
+├── components/
+│   ├── ui/                       # shadcn/ui components
+│   │   ├── alert-dialog.tsx
+│   │   ├── badge.tsx
+│   │   ├── button.tsx
+│   │   ├── card.tsx
+│   │   ├── dialog.tsx
+│   │   ├── dropdown-menu.tsx
+│   │   ├── input.tsx
+│   │   ├── label.tsx
+│   │   ├── separator.tsx
+│   │   ├── skeleton.tsx
+│   │   ├── switch.tsx
+│   │   ├── tabs.tsx
+│   │   ├── textarea.tsx
+│   │   └── tooltip.tsx
+│   └── admin/                    # Admin panel components
+│       ├── category-form-dialog.tsx    # Create/edit category dialog
+│       ├── create-restaurant-dialog.tsx # New restaurant dialog
+│       ├── delete-confirm-dialog.tsx   # Reusable delete confirmation
+│       ├── delete-restaurant-button.tsx # Restaurant delete with confirm
+│       ├── image-uploader.tsx          # File upload component
+│       ├── menu-editor.tsx             # Full menu CRUD editor
+│       ├── product-form-dialog.tsx     # Create/edit product dialog
+│       ├── qr-code-card.tsx            # QR code display + download
+│       └── restaurant-info-form.tsx    # Restaurant edit form
 │
-└── seed.ts                       # Database seeder (sample restaurant + products)
+├── seed.ts                       # Database seeder (sample restaurant + products)
+│
+└── public/uploads/               # Uploaded images (logo, hero, product photos)
 ```
 
 ---
@@ -100,10 +122,10 @@ src/
 
 | Table | Description |
 |---|---|
-| `restaurants` | Restaurant profile: slug, name, branding, theme colors, images. |
+| `restaurants` | Restaurant profile: slug, name, brandText, description, logoUrl, heroImageUrl, address, phone, socialMedia (JSON), isAvailable, theme (JSON). |
 | `restaurant_admins` | Many-to-many junction between users and restaurants (who can manage what). |
 | `categories` | Menu categories per restaurant, with sort ordering. |
-| `products` | Menu items belonging to a category and restaurant. Has price, description, availability flag. |
+| `products` | Menu items belonging to a category and restaurant. Has price, description, imageUrl, availability flag, sort ordering. |
 
 ### Relations
 
@@ -164,9 +186,12 @@ Handles the full OTP login lifecycle.
 
 **Restaurant operations:**
 - `getRestaurantBySlug(slug)` — Loads restaurant with categories and products (sorted by sortOrder).
+- `getRestaurantById(id)` — Loads restaurant by ID with categories and products.
 - `getRestaurantsForAdmin(userId)` — Returns all restaurants a user can manage.
 - `createRestaurant(data, userId)` — Creates restaurant and makes the user its admin.
-- `updateRestaurant(restaurantId, data)` — Partial update of restaurant fields.
+- `updateRestaurant(restaurantId, data)` — Partial update of restaurant fields (including address, phone, socialMedia, isAvailable).
+- `deleteRestaurant(restaurantId)` — Deletes restaurant and all associated data (cascade).
+- `getRestaurantStats(restaurantId)` — Returns category count, product count, available product count.
 - `isRestaurantAdmin(userId, restaurantId)` — Permission check.
 
 **Category operations:**
@@ -241,8 +266,34 @@ Server actions bridge the frontend and modules. Each action handles:
 | File | Actions |
 |---|---|
 | `auth.ts` | `requestOtpAction`, `checkCodeAction`, `otpLoginAction`, `getMeAction`, `logoutAction`, `resendOtpAction` |
-| `menu.ts` | `getMenuAction`, `createCategoryAction`, `updateCategoryAction`, `deleteCategoryAction`, `createProductAction`, `updateProductAction`, `deleteProductAction` |
-| `restaurants.ts` | `createRestaurantAction`, `updateRestaurantAction`, `getMyRestaurantsAction` |
+| `menu.ts` | `getMenuAction`, `createCategoryAction`, `updateCategoryAction`, `deleteCategoryAction`, `createProductAction`, `updateProductAction`, `deleteProductAction`, `reorderCategoriesAction`, `reorderProductsAction` |
+| `restaurants.ts` | `createRestaurantAction`, `updateRestaurantAction`, `deleteRestaurantAction`, `getMyRestaurantsAction`, `getRestaurantAction`, `getRestaurantStatsAction` |
+| `upload.ts` | `uploadFile` — accepts FormData, saves file to `public/uploads/`, returns `/uploads/{name}` URL. Max 5MB, accepts jpg/png/webp/gif. |
+
+---
+
+## File Uploads
+
+Images are uploaded via a server action (`actions/upload.ts`) and stored locally in `public/uploads/`. The `ImageUploader` component provides a click-to-upload UI with preview, remove button, and file validation.
+
+Uploaded files are saved with a random hex filename to avoid collisions. The returned URL (`/uploads/{name}`) is stored in the database as a text field.
+
+---
+
+## Admin Dashboard
+
+### `/admin` — Dashboard
+- Lists user's restaurants with logo, slug preview, and action buttons
+- "ساخت رستوران جدید" button opens create dialog (name, auto-generated slug, brandText, description)
+
+### `/admin/[restaurantId]` — Restaurant Detail
+- **Overview tab**: Stats cards (categories, products, available), QR code with download, danger zone for deletion
+- **Edit tab**: Full edit form — basic info, availability toggle, image uploads (logo, hero), contact info, social media
+
+### `/admin/[restaurantId]/menu` — Menu Editor
+- Full CRUD for categories (create, edit, delete, reorder up/down)
+- Full CRUD for products (create, edit, delete, reorder, toggle availability)
+- Products can be moved between categories
 
 ---
 
@@ -337,12 +388,20 @@ Installed components (all in `src/components/ui/`):
 
 | Component | Primitive | Variants |
 |---|---|---|
+| **AlertDialog** | `@base-ui/react/alert-dialog` | Confirmation dialogs with action/cancel |
+| **Badge** | `@base-ui/react/use-render` | `default`, `secondary`, `destructive`, `outline`, `ghost`, `link` |
 | **Button** | `@base-ui/react/Button` | `default`, `outline`, `secondary`, `ghost`, `destructive`, `link` × sizes: `xs`, `sm`, `default`, `lg`, `icon`, `icon-xs`, `icon-sm`, `icon-lg` |
 | **Card** | `<div>` | `default`, `sm` (via `size` prop) — includes `CardHeader`, `CardTitle`, `CardDescription`, `CardAction`, `CardContent`, `CardFooter` |
+| **Dialog** | `@base-ui/react/dialog` | Modal dialogs with header, footer, trigger |
+| **DropdownMenu** | `@base-ui/react/menu` | Context menus with items, groups, separators |
 | **Input** | `@base-ui/react/Input` | Single variant with focus/invalid/disabled states |
 | **Label** | `<label>` | Single variant with disabled states |
-| **Badge** | `@base-ui/react/use-render` | `default`, `secondary`, `destructive`, `outline`, `ghost`, `link` |
 | **Separator** | `@base-ui/react/Separator` | Horizontal/vertical |
+| **Skeleton** | `<div>` | Loading placeholder with pulse animation |
+| **Switch** | `@base-ui/react/switch` | Toggle switch (sm/default sizes) |
+| **Tabs** | `@base-ui/react/tabs` | Tab navigation (default/line variants) |
+| **Textarea** | `<textarea>` | Auto-sizing with focus/invalid states |
+| **Tooltip** | `@base-ui/react/tooltip` | Hover tooltips (requires `TooltipProvider`) |
 
 shadcn config (`components.json`): style `base-nova`, base color `neutral`, icon library `lucide`, RTL enabled.
 

@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, count, eq } from "drizzle-orm";
 import { db } from "@/db/index";
 import {
   categories,
@@ -10,6 +10,22 @@ import {
 export function getRestaurantBySlug(slug: string) {
   return db.query.restaurants.findFirst({
     where: { slug },
+    with: {
+      categories: {
+        orderBy: (c, { asc }) => [asc(c.sortOrder)],
+        with: {
+          products: {
+            orderBy: (p, { asc }) => [asc(p.sortOrder)],
+          },
+        },
+      },
+    },
+  });
+}
+
+export function getRestaurantById(id: string) {
+  return db.query.restaurants.findFirst({
+    where: { id },
     with: {
       categories: {
         orderBy: (c, { asc }) => [asc(c.sortOrder)],
@@ -38,6 +54,10 @@ export async function createRestaurant(
     name: string;
     brandText?: string;
     description?: string;
+    address?: string;
+    phone?: string;
+    socialMedia?: Record<string, string>;
+    isAvailable?: boolean;
   },
   userId: string,
 ) {
@@ -60,6 +80,10 @@ export async function updateRestaurant(
     description: string | null;
     logoUrl: string | null;
     heroImageUrl: string | null;
+    address: string | null;
+    phone: string | null;
+    socialMedia: Record<string, string> | null;
+    isAvailable: boolean;
     theme: Record<string, string> | null;
   }>,
 ) {
@@ -69,6 +93,35 @@ export async function updateRestaurant(
     .where(eq(restaurants.id, restaurantId))
     .returning();
   return updated;
+}
+
+export async function deleteRestaurant(restaurantId: string) {
+  await db.delete(restaurants).where(eq(restaurants.id, restaurantId));
+}
+
+export async function getRestaurantStats(restaurantId: string) {
+  const [cat] = await db
+    .select({ count: count() })
+    .from(categories)
+    .where(eq(categories.restaurantId, restaurantId));
+  const [prod] = await db
+    .select({ count: count() })
+    .from(products)
+    .where(eq(products.restaurantId, restaurantId));
+  const [avail] = await db
+    .select({ count: count() })
+    .from(products)
+    .where(
+      and(
+        eq(products.restaurantId, restaurantId),
+        eq(products.available, true),
+      ),
+    );
+  return {
+    categories: cat.count,
+    products: prod.count,
+    available: avail.count,
+  };
 }
 
 export function isRestaurantAdmin(userId: string, restaurantId: string) {

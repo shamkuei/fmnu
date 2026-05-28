@@ -1,145 +1,152 @@
+import Link from "next/link";
+import { LayoutGrid, Pencil, QrCode, UtensilsCrossed } from "lucide-react";
 import { notFound } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  getRestaurantAction,
+  getRestaurantStatsAction,
+} from "@/actions/restaurants";
+import { DeleteRestaurantButton } from "@/components/admin/delete-restaurant-button";
+import { QrCodeCard } from "@/components/admin/qr-code-card";
+import { RestaurantInfoForm } from "@/components/admin/restaurant-info-form";
+import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { db } from "@/db/index";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-export default async function RestaurantEditor({
+export default async function RestaurantDetailPage({
   params,
 }: {
   params: Promise<{ restaurantId: string }>;
 }) {
   const { restaurantId } = await params;
-  const restaurant = await db.query.restaurants.findFirst({
-    where: { id: restaurantId },
-  });
+
+  let restaurant;
+  try {
+    restaurant = await getRestaurantAction(restaurantId);
+  } catch {
+    notFound();
+  }
 
   if (!restaurant) notFound();
+
+  let stats = { categories: 0, products: 0, available: 0 };
+  try {
+    stats = await getRestaurantStatsAction(restaurantId);
+  } catch {
+    // ignore stats error
+  }
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-8">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-foreground">
-          {restaurant.name}
-        </h1>
-        <Button render={<a href={`/admin/${restaurant.id}/menu`} />}>
-          مدیریت منو
-        </Button>
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">
+            {restaurant.name}
+          </h1>
+          <p dir="ltr" className="font-mono text-sm text-muted-foreground">
+            fmnu.ir/{restaurant.slug}
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Link
+            href={`/admin/${restaurant.id}/menu`}
+            className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-primary px-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/80"
+          >
+            <UtensilsCrossed className="size-4" />
+            مدیریت منو
+          </Link>
+        </div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>اطلاعات رستوران</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div>
-              <p className="mb-1 text-sm font-medium text-muted-foreground">
-                نام
-              </p>
-              <p className="text-foreground">{restaurant.name}</p>
-            </div>
-            <div>
-              <p className="mb-1 text-sm font-medium text-muted-foreground">
-                آدرس زیردامنه
-              </p>
-              <p dir="ltr" className="font-mono text-sm text-muted-foreground">
-                {restaurant.slug}.fmnu.ir
-              </p>
-            </div>
+      <Tabs defaultValue="overview">
+        <TabsList>
+          <TabsTrigger value="overview">
+            <LayoutGrid className="size-4" />
+            نمای کلی
+          </TabsTrigger>
+          <TabsTrigger value="edit">
+            <Pencil className="size-4" />
+            ویرایش
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="mt-6 space-y-6">
+          {/* Stats */}
+          <div className="grid gap-4 sm:grid-cols-3">
+            <Card>
+              <CardContent className="flex items-center gap-3 pt-6">
+                <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <LayoutGrid className="size-5" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-foreground">
+                    {stats.categories}
+                  </p>
+                  <p className="text-xs text-muted-foreground">دسته‌بندی</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="flex items-center gap-3 pt-6">
+                <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <UtensilsCrossed className="size-5" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-foreground">
+                    {stats.products}
+                  </p>
+                  <p className="text-xs text-muted-foreground">محصول</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="flex items-center gap-3 pt-6">
+                <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <QrCode className="size-5" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-foreground">
+                    <a
+                      href={`/${restaurant.slug}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary underline"
+                    >
+                      مشاهده منو
+                    </a>
+                  </p>
+                  <p className="text-xs text-muted-foreground">لینک عمومی</p>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
-          {restaurant.description && (
-            <>
-              <Separator />
-              <div>
-                <p className="mb-1 text-sm font-medium text-muted-foreground">
-                  توضیحات
-                </p>
-                <p className="text-foreground">{restaurant.description}</p>
-              </div>
-            </>
-          )}
+          {/* QR Code */}
+          <QrCodeCard slug={restaurant.slug} />
 
-          {restaurant.brandText && (
-            <>
-              <Separator />
-              <div>
-                <p className="mb-1 text-sm font-medium text-muted-foreground">
-                  متن برند
-                </p>
-                <p className="text-foreground">{restaurant.brandText}</p>
-              </div>
-            </>
-          )}
-
-          {restaurant.theme && (
-            <>
-              <Separator />
-              <div>
-                <p className="mb-1 text-sm font-medium text-muted-foreground">
-                  تم (متغیرهای CSS)
-                </p>
-                <pre
-                  dir="ltr"
-                  className="mt-1 overflow-x-auto rounded-lg bg-muted p-3 font-mono text-xs text-foreground"
-                >
-                  {JSON.stringify(restaurant.theme, null, 2)}
-                </pre>
-              </div>
-            </>
-          )}
-
-          {restaurant.logoUrl && (
-            <>
-              <Separator />
-              <div>
-                <p className="mb-1 text-sm font-medium text-muted-foreground">
-                  لوگو
-                </p>
-                <img
-                  src={restaurant.logoUrl}
-                  alt="لوگو"
-                  className="h-20 w-20 rounded-lg object-cover"
-                />
-              </div>
-            </>
-          )}
-
-          {restaurant.heroImageUrl && (
-            <>
-              <Separator />
-              <div>
-                <p className="mb-1 text-sm font-medium text-muted-foreground">
-                  تصویر اصلی
-                </p>
-                <img
-                  src={restaurant.heroImageUrl}
-                  alt="تصویر اصلی"
-                  className="h-32 w-full rounded-lg object-cover"
-                />
-              </div>
-            </>
-          )}
-
+          {/* Danger Zone */}
           <Separator />
-          <div>
-            <Button
-              variant="outline"
-              size="sm"
-              render={
-                <a
-                  href={`/${restaurant.slug}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                />
-              }
-            >
-              مشاهده منوی عمومی
-            </Button>
+          <div className="rounded-lg border border-destructive/20 p-4">
+            <h3 className="font-semibold text-destructive">منطقه خطر</h3>
+            <p className="mt-1 text-sm text-muted-foreground">
+              حذف رستوران قابل بازگشت نیست و تمام اطلاعات منو هم حذف میشه.
+            </p>
+            <div className="mt-3">
+              <DeleteRestaurantButton
+                restaurantId={restaurant.id}
+                restaurantName={restaurant.name}
+              />
+            </div>
           </div>
-        </CardContent>
-      </Card>
+        </TabsContent>
+
+        <TabsContent value="edit" className="mt-6">
+          <Card>
+            <CardContent className="pt-6">
+              <RestaurantInfoForm restaurant={restaurant} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </main>
   );
 }

@@ -43,6 +43,13 @@ async function seed() {
         name: "دلوپی",
         brandText: "برگر و ساندویچ",
         description: "بهترین برگرهای شهر با مواد اولیه تازه",
+        address: "تهران، خیابان ولیعصر، پلاک ۱۲۳",
+        phone: "02112345678",
+        socialMedia: {
+          instagram: "@dolopi_burger",
+          telegram: "@dolopi",
+        },
+        isAvailable: true,
         theme: {
           "--text-primary": "#1a1a2e",
           "--text-secondary": "#555",
