@@ -50,13 +50,14 @@ export default function LandingPage() {
           مشتری‌ها بذار و هر لحظه آپدیت کن.
         </p>
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Button size="lg" render={<a href="/auth/login?action=signup" />}>
+          <Button size="lg" nativeButton={false} render={<a href="/auth/login?action=signup" />}>
             شروع رایگان
             <ArrowLeft className="size-4" />
           </Button>
           <Button
             variant="outline"
             size="lg"
+            nativeButton={false}
             render={<a href="/dolopi" />}
           >
             مشاهده نمونه منو
@@ -64,6 +65,7 @@ export default function LandingPage() {
           <Button
             variant="ghost"
             size="lg"
+            nativeButton={false}
             render={<a href="#how-it-works" />}
           >
             بیشتر بدانید
@@ -305,6 +307,7 @@ export default function LandingPage() {
           <Button
             variant="outline"
             size="lg"
+            nativeButton={false}
             className="border-primary-foreground/20 bg-primary-foreground/10 text-primary-foreground hover:bg-primary-foreground/20 hover:text-primary-foreground"
             render={<a href="/auth/login?action=signup" />}
           >

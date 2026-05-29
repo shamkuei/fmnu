@@ -60,6 +60,7 @@ export function LandingNavbar() {
           <Button
             size="sm"
             className="hidden sm:inline-flex"
+            nativeButton={false}
             render={<a href="/auth/login?action=signup" />}
           >
             شروع رایگان
@@ -68,6 +69,7 @@ export function LandingNavbar() {
             variant="ghost"
             size="sm"
             className="hidden sm:inline-flex"
+            nativeButton={false}
             render={<a href="/auth/login" />}
           >
             ورود
@@ -155,6 +157,7 @@ export function LandingNavbar() {
             <Button
               size="sm"
               className="w-full"
+              nativeButton={false}
               render={<a href="/auth/login?action=signup" />}
               onClick={() => setMobileOpen(false)}
             >
@@ -164,6 +167,7 @@ export function LandingNavbar() {
               variant="ghost"
               size="sm"
               className="w-full"
+              nativeButton={false}
               render={<a href="/auth/login" />}
               onClick={() => setMobileOpen(false)}
             >
