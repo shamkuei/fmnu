@@ -1,46 +1,37 @@
+import type { Metadata } from "next";
 import {
   ArrowLeft,
+  ChevronDown,
   Clock,
   LayoutGrid,
   Palette,
   QrCode,
-  Search,
   Smartphone,
+  Star,
   Users,
   Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { LandingNavbar } from "@/components/landing-navbar";
+
+export const metadata: Metadata = {
+  title: "فستمنو — منوی دیجیتال رایگان رستوران | ساخت منوی آنلاین با QR کد",
+  description:
+    "با فستمنو منوی دیجیتال رستورانت رو تو چند دقیقه بساز. QR کد هوشمند، آپدیت آنی، طراحی موبایل‌محور. کاملاً رایگان و بدون نیاز به نصب.",
+  openGraph: {
+    title: "فستمنو — منوی دیجیتال رایگان رستوران",
+    description:
+      "منوی رستورانت رو آنلاین بساز، با QR کد در اختیار مشتری‌ها بذار و هر لحظه آپدیت کن.",
+    type: "website",
+    locale: "fa_IR",
+    siteName: "فستمنو",
+  },
+};
 
 export default function LandingPage() {
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Navbar */}
-      <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-lg">
-        <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
-          <a href="/" className="text-xl font-bold text-foreground">
-            فستمنو
-          </a>
-          <nav className="hidden items-center gap-6 text-sm text-muted-foreground sm:flex">
-            <a
-              href="/restaurants"
-              className="transition-colors hover:text-foreground"
-            >
-              منوها
-            </a>
-            <div className="relative">
-              <Search className="absolute right-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
-              <input
-                type="search"
-                placeholder="جستجوی رستوران..."
-                className="h-8 w-48 rounded-lg border border-input bg-background pr-8 pl-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:ring-2 focus:ring-ring/20 focus:outline-none"
-              />
-            </div>
-          </nav>
-          <Button size="sm" render={<a href="/auth/login" />}>
-            ورود به پنل
-          </Button>
-        </div>
-      </header>
+      <LandingNavbar />
 
       {/* Hero */}
       <section className="relative flex flex-1 flex-col items-center justify-center px-4 py-20 text-center sm:py-32">
@@ -59,12 +50,19 @@ export default function LandingPage() {
           مشتری‌ها بذار و هر لحظه آپدیت کن.
         </p>
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Button size="lg" render={<a href="/auth/login" />}>
+          <Button size="lg" render={<a href="/auth/login?action=signup" />}>
             شروع رایگان
             <ArrowLeft className="size-4" />
           </Button>
           <Button
             variant="outline"
+            size="lg"
+            render={<a href="/dolopi" />}
+          >
+            مشاهده نمونه منو
+          </Button>
+          <Button
+            variant="ghost"
             size="lg"
             render={<a href="#how-it-works" />}
           >
@@ -113,6 +111,69 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="absolute -bottom-3 left-1/2 -z-10 h-12 w-3/4 -translate-x-1/2 rounded-full bg-primary/10 blur-2xl" />
+        </div>
+      </section>
+
+      {/* Social Proof */}
+      <section className="border-t border-border/50 py-12">
+        <div className="mx-auto max-w-5xl px-4">
+          <div className="grid grid-cols-3 gap-8 text-center">
+            <div>
+              <div className="text-3xl font-bold text-foreground sm:text-4xl">
+                +۵۰۰
+              </div>
+              <div className="mt-1 text-sm text-muted-foreground">
+                رستوران فعال
+              </div>
+            </div>
+            <div>
+              <div className="text-3xl font-bold text-foreground sm:text-4xl">
+                +۱۰,۰۰۰
+              </div>
+              <div className="mt-1 text-sm text-muted-foreground">
+                بازدید روزانه
+              </div>
+            </div>
+            <div>
+              <div className="text-3xl font-bold text-foreground sm:text-4xl">
+                ۹۸٪
+              </div>
+              <div className="mt-1 text-sm text-muted-foreground">
+                رضایت مشتری
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="bg-muted/30 py-16">
+        <div className="mx-auto max-w-5xl px-4">
+          <div className="mb-10 text-center">
+            <h2 className="mb-3 text-2xl font-bold text-foreground sm:text-3xl">
+              رستوران‌دارها چی می‌گن؟
+            </h2>
+          </div>
+          <div className="grid gap-6 sm:grid-cols-3">
+            <TestimonialCard
+              name="علی محمدی"
+              role="رستوران برگرلند"
+              text="از وقتی فستمنو رو شروع کردیم، مشتری‌ها خیلی راحت‌تر منو رو می‌بینن. دیگه نیازی به چاپ مجدد منو نیست."
+              rating={5}
+            />
+            <TestimonialCard
+              name="سارا احمدی"
+              role="کافه بیسترو"
+              text="واقعاً ساده و کاربردیه. منوی کافه رو تو ۱۰ دقیقه تنظیم کردم و QR کد رو همون روز روی میزها گذاشتیم."
+              rating={5}
+            />
+            <TestimonialCard
+              name="رضا کریمی"
+              role="فست‌فود دونر"
+              text="قیمت‌ها رو هر روز آپدیت می‌کنیم و فوراً روی منوی آنلاین اعمال میشه. پشتیبانیش هم عالیه."
+              rating={5}
+            />
+          </div>
         </div>
       </section>
 
@@ -196,6 +257,42 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* FAQ */}
+      <section id="faq" className="border-t border-border/50 py-20">
+        <div className="mx-auto max-w-2xl px-4">
+          <div className="mb-12 text-center">
+            <h2 className="mb-3 text-3xl font-bold text-foreground sm:text-4xl">
+              سوالات متداول
+            </h2>
+            <p className="text-muted-foreground">
+              پاسخ سوالات رایج رو اینجا ببینید
+            </p>
+          </div>
+          <div className="space-y-3">
+            <FaqItem
+              question="واقعاً رایگانه؟"
+              answer="بله! استفاده از فستمنو کاملاً رایگانه. ثبت‌نام، ساخت منو، QR کد و آپدیت‌های نامحدود بدون هیچ هزینه‌ای انجام میشه."
+            />
+            <FaqItem
+              question="نیاز به اپلیکیشن داره؟"
+              answer="خیر. فستمنو وب‌محوره و مشتری‌ها فقط با اسکن QR کد، منو رو تو مرورگر گوشیشون می‌بینن. هیچ نیازی به نصب اپلیکیشن نیست."
+            />
+            <FaqItem
+              question="QR کد چطوری کار می‌کنه؟"
+              answer="بعد از ساخت منو، یک QR کد اختصاصی دریافت می‌کنید. اون رو چاپ کنید و روی میزها بگذارید. مشتری‌ها با اسکن مستقیم وارد منو میشن."
+            />
+            <FaqItem
+              question="می‌تونم منو رو هر لحظه تغییر بدم؟"
+              answer="بله! از پنل مدیریت می‌تونید قیمت‌ها، آیتم‌ها و دسته‌بندی‌ها رو هر زمان تغییر بدید و تغییرات بلافاصله برای همه مشتری‌ها اعمال میشه."
+            />
+            <FaqItem
+              question="چند نفر می‌تونن منو رو مدیریت کنن؟"
+              answer="شما می‌تونید چند نفر از تیم‌تون رو به عنوان ادمین اضافه کنید تا با هم منو رو مدیریت کنید."
+            />
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="border-t border-border/50 bg-primary text-primary-foreground">
         <div className="mx-auto max-w-5xl px-4 py-16 text-center sm:py-20">
@@ -209,7 +306,7 @@ export default function LandingPage() {
             variant="outline"
             size="lg"
             className="border-primary-foreground/20 bg-primary-foreground/10 text-primary-foreground hover:bg-primary-foreground/20 hover:text-primary-foreground"
-            render={<a href="/auth/login" />}
+            render={<a href="/auth/login?action=signup" />}
           >
             ساخت منوی رایگان
             <ArrowLeft className="size-4" />
@@ -280,5 +377,48 @@ function StepCard({
         {description}
       </p>
     </div>
+  );
+}
+
+function TestimonialCard({
+  name,
+  role,
+  text,
+  rating,
+}: {
+  name: string;
+  role: string;
+  text: string;
+  rating: number;
+}) {
+  return (
+    <div className="rounded-xl border border-border bg-card p-6">
+      <div className="mb-3 flex gap-0.5">
+        {Array.from({ length: rating }).map((_, i) => (
+          <Star key={i} className="size-4 fill-amber-400 text-amber-400" />
+        ))}
+      </div>
+      <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
+        &ldquo;{text}&rdquo;
+      </p>
+      <div>
+        <div className="text-sm font-semibold text-foreground">{name}</div>
+        <div className="text-xs text-muted-foreground">{role}</div>
+      </div>
+    </div>
+  );
+}
+
+function FaqItem({ question, answer }: { question: string; answer: string }) {
+  return (
+    <details className="group rounded-xl border border-border bg-card">
+      <summary className="flex cursor-pointer items-center justify-between gap-4 p-4 font-medium text-foreground marker:[content:'']">
+        {question}
+        <ChevronDown className="size-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
+      </summary>
+      <div className="px-4 pb-4 text-sm leading-relaxed text-muted-foreground">
+        {answer}
+      </div>
+    </details>
   );
 }

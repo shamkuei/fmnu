@@ -43,3 +43,7 @@ next-env.d.ts
 # docs
 PROJECT.md
 STYLING.md
+
+#test dbs
+dev.db
+
