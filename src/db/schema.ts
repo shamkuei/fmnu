@@ -18,7 +18,10 @@ export const users = sqliteTable("user", {
     .$defaultFn(() => crypto.randomUUID())
     .primaryKey(),
   phone: text().unique().notNull(),
-  name: text(),
+  firstName: text("first_name").notNull().default(""),
+  lastName: text("last_name").notNull().default(""),
+  email: text(),
+  imageUrl: text("image_url"),
   hasLogined: integer({ mode: "boolean" }).default(false).notNull(),
   createdAt: integer("created_at", { mode: "timestamp" })
     .default(sql`(unixepoch())`)
@@ -79,6 +82,7 @@ export const restaurants = sqliteTable("restaurant", {
   heroImageUrl: text("hero_image_url"),
   address: text(),
   phone: text(),
+  province: text(),
   socialMedia: text("social_media", { mode: "json" }).$type<
     Record<string, string>
   >(),

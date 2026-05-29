@@ -93,8 +93,10 @@ export default async function RestaurantsPage({
                     {r.description}
                   </p>
                 )}
-                {r.address && (
-                  <p className="text-xs text-muted-foreground">{r.address}</p>
+                {(r.province || r.address) && (
+                  <p className="text-xs text-muted-foreground">
+                    {[r.province, r.address].filter(Boolean).join("، ")}
+                  </p>
                 )}
               </a>
             ))}

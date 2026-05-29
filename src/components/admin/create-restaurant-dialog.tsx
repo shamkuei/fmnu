@@ -4,6 +4,7 @@ import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createRestaurantAction } from "@/actions/restaurants";
+import { IRAN_PROVINCES } from "@/lib/provinces";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -36,6 +37,7 @@ export function CreateRestaurantDialog() {
   const [slug, setSlug] = useState("");
   const [brandText, setBrandText] = useState("");
   const [description, setDescription] = useState("");
+  const [province, setProvince] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -49,12 +51,14 @@ export function CreateRestaurantDialog() {
         slug: slug.trim(),
         brandText: brandText.trim() || undefined,
         description: description.trim() || undefined,
+        province: province || undefined,
       });
       setOpen(false);
       setName("");
       setSlug("");
       setBrandText("");
       setDescription("");
+      setProvince("");
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "خطا در ساخت رستوران");
@@ -69,7 +73,8 @@ export function CreateRestaurantDialog() {
         render={
           <Button>
             <Plus />
-            ساخت رستوران جدید
+            <span className="hidden sm:inline">ساخت رستوران جدید</span>
+            <span className="sm:hidden">رستوران جدید</span>
           </Button>
         }
       />
@@ -102,20 +107,18 @@ export function CreateRestaurantDialog() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="slug">آدرس زیردامنه</Label>
-            <div className="flex items-center gap-0">
+            <div className="flex items-center gap-0" dir="ltr">
               <span
-                dir="ltr"
-                className="shrink-0 rounded-r-lg border border-l-0 border-input bg-muted px-2 py-1.5 text-sm text-muted-foreground"
+                className="shrink-0 rounded-s-lg border border-e-0 border-input bg-muted px-2 py-1.5 text-sm text-muted-foreground"
               >
                 fmnu.ir/
               </span>
               <Input
                 id="slug"
-                dir="ltr"
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
                 placeholder="dolopi"
-                className="rounded-r-none font-mono"
+                className="rounded-s-none font-mono"
               />
             </div>
           </div>
@@ -137,6 +140,22 @@ export function CreateRestaurantDialog() {
               placeholder="توضیحات کوتاه درباره رستوران"
               rows={3}
             />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="province">استان</Label>
+            <select
+              id="province"
+              value={province}
+              onChange={(e) => setProvince(e.target.value)}
+              className="flex h-9 w-full rounded-lg border border-input bg-background px-3 text-sm text-foreground focus:border-ring focus:ring-2 focus:ring-ring/20 focus:outline-none"
+            >
+              <option value="">انتخاب استان...</option>
+              {IRAN_PROVINCES.map((p) => (
+                <option key={p} value={p}>
+                  {p}
+                </option>
+              ))}
+            </select>
           </div>
           <DialogFooter showCloseButton>
             <Button

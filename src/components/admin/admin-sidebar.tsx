@@ -40,10 +40,19 @@ export function AdminSidebar({
     }`;
   }
 
+  function mobileLinkClasses(href: string) {
+    const isActive = pathname === basePath + href;
+    return `flex flex-1 flex-col items-center gap-1 rounded-lg px-1 py-2 text-[0.65rem] transition-colors ${
+      isActive
+        ? "bg-primary/10 font-medium text-primary"
+        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+    }`;
+  }
+
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="hidden lg:block w-52 shrink-0">
+      <aside className="hidden w-52 shrink-0 lg:block">
         <div className="sticky top-8 space-y-6">
           <div>
             <h1 className="text-lg font-bold text-foreground">{name}</h1>
@@ -71,15 +80,21 @@ export function AdminSidebar({
         </div>
       </aside>
 
-      {/* Mobile nav */}
-      <nav className="lg:hidden mb-6 flex gap-1 overflow-x-auto pb-2">
-        {navItems.map(({ href, label, icon: Icon }) => (
-          <Link key={href} href={basePath + href} className={linkClasses(href)}>
-            <Icon className="size-4" />
-            {label}
-          </Link>
-        ))}
-      </nav>
+      {/* Mobile bottom tab bar */}
+      <div className="fixed inset-x-0 bottom-0 z-50 border-t bg-background/95 backdrop-blur-sm lg:hidden">
+        <nav className="flex items-end justify-around px-1 pb-[env(safe-area-inset-bottom)]">
+          {navItems.map(({ href, label, icon: Icon }) => (
+            <Link
+              key={href}
+              href={basePath + href}
+              className={mobileLinkClasses(href)}
+            >
+              <Icon className="size-5" />
+              {label}
+            </Link>
+          ))}
+        </nav>
+      </div>
     </>
   );
 }

@@ -20,7 +20,7 @@ async function seed() {
   if (!user) {
     [user] = await db
       .insert(schema.users)
-      .values({ phone, name: "احسان", hasLogined: true })
+      .values({ phone, firstName: "احسان", lastName: "شامکویی", hasLogined: true })
       .returning();
     console.log(`Created user: ${user.id} (${user.phone})`);
   } else {
@@ -45,6 +45,7 @@ async function seed() {
         description: "بهترین برگرهای شهر با مواد اولیه تازه",
         address: "تهران، خیابان ولیعصر، پلاک ۱۲۳",
         phone: "02112345678",
+        province: "تهران",
         socialMedia: {
           instagram: "@dolopi_burger",
           telegram: "@dolopi",

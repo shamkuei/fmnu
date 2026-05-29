@@ -2,8 +2,9 @@
 
 import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
+import z from "zod";
 import { db } from "@/db/index";
-import { sessions } from "@/db/schema";
+import { sessions, users } from "@/db/schema";
 import { getSessionFromSessionId } from "@/modules/auth/authorizer.service";
 import { checkCodeFlow } from "@/modules/auth/flows/check-code";
 import { otpLogin } from "@/modules/auth/flows/otp-login";
@@ -65,4 +66,31 @@ export async function logoutAction() {
 
 export async function resendOtpAction(verificationId: string) {
   return resendCode(verificationId);
+}
+
+const UpdateProfileSchema = z.object({
+  firstName: z.string().min(1, "نام الزامی است").max(100),
+  lastName: z.string().min(1, "نام خانوادگی الزامی است").max(100),
+  email: z.string().email("ایمیل نامعتبر است").nullable().optional(),
+});
+
+export async function updateProfileAction(
+  input: z.input<typeof UpdateProfileSchema>,
+) {
+  const cookieStore = await cookies();
+  const sessionId = cookieStore.get("session-id")?.value;
+  if (!sessionId) throw new Error("NOT_AUTHENTICATED");
+
+  const session = await getSessionFromSessionId(sessionId);
+  if (!session?.user) throw new Error("NOT_AUTHENTICATED");
+
+  const data = UpdateProfileSchema.parse(input);
+  await db
+    .update(users)
+    .set({
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email ?? null,
+    })
+    .where(eq(users.id, session.user.id));
 }

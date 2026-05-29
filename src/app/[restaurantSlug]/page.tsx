@@ -85,6 +85,7 @@ export default async function MenuPage({
             restaurantName={restaurant.name}
             address={restaurant.address}
             phone={restaurant.phone}
+            province={restaurant.province}
             socialMedia={socials}
           />
 

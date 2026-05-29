@@ -16,6 +16,7 @@ export function searchPublicRestaurants(query?: string) {
     description: restaurants.description,
     logoUrl: restaurants.logoUrl,
     address: restaurants.address,
+    province: restaurants.province,
   };
 
   if (query) {
@@ -87,6 +88,7 @@ export async function createRestaurant(
     description?: string;
     address?: string;
     phone?: string;
+    province?: string;
     socialMedia?: Record<string, string>;
     isAvailable?: boolean;
   },
@@ -113,6 +115,7 @@ export async function updateRestaurant(
     heroImageUrl: string | null;
     address: string | null;
     phone: string | null;
+    province: string | null;
     socialMedia: Record<string, string> | null;
     isAvailable: boolean;
     theme: Record<string, string> | null;

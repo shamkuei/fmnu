@@ -11,6 +11,7 @@ import {
   Users,
   Zap,
 } from "lucide-react";
+import { getMeAction } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import { LandingNavbar } from "@/components/landing-navbar";
 
@@ -28,10 +29,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const user = await getMeAction();
+
   return (
     <div className="min-h-screen flex flex-col">
-      <LandingNavbar />
+      <LandingNavbar
+        user={
+          user
+            ? { firstName: user.firstName, lastName: user.lastName }
+            : null
+        }
+      />
 
       {/* Hero */}
       <section className="relative flex flex-1 flex-col items-center justify-center px-4 py-20 text-center sm:py-32">

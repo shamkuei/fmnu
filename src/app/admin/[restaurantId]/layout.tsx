@@ -38,7 +38,7 @@ export default async function RestaurantLayout({
           name={restaurant.name}
           slug={restaurant.slug}
         />
-        <div className="min-w-0 flex-1">{children}</div>
+        <div className="min-w-0 flex-1 pb-20 lg:pb-0">{children}</div>
       </div>
     </main>
   );

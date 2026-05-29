@@ -5,8 +5,10 @@ import {
 } from "@/actions/restaurants";
 import { QrCodeCard } from "@/components/admin/qr-code-card";
 import { QuickActions } from "@/components/admin/quick-actions";
+import { EmptyStateActions } from "@/components/admin/empty-state-actions";
 import { Card, CardContent } from "@/components/ui/card";
 import { Eye, LayoutGrid, QrCode, UtensilsCrossed } from "lucide-react";
+import Link from "next/link";
 
 export default async function OverviewPage({
   params,
@@ -30,6 +32,8 @@ export default async function OverviewPage({
   } catch {
     // ignore stats error
   }
+
+  const isEmpty = stats.categories === 0 && stats.products === 0;
 
   return (
     <div className="space-y-6">
@@ -86,11 +90,33 @@ export default async function OverviewPage({
         </Card>
       </div>
 
+      {/* Guided empty state */}
+      {isEmpty && (
+        <Card className="border-dashed">
+          <CardContent className="flex flex-col items-center gap-4 py-10 text-center">
+            <div className="flex size-16 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <UtensilsCrossed className="size-8" />
+            </div>
+            <div>
+              <p className="font-medium text-foreground">
+                هنوز منویی ایجاد نشده
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                برای شروع، اولین دسته‌بندی رو اضافه کن (مثل: پیتزا، سالاد، نوشیدنی)
+              </p>
+            </div>
+            <EmptyStateActions restaurantId={restaurant.id} />
+          </CardContent>
+        </Card>
+      )}
+
       {/* Quick Actions */}
-      <QuickActions
-        restaurantId={restaurant.id}
-        categories={restaurant.categories}
-      />
+      {!isEmpty && (
+        <QuickActions
+          restaurantId={restaurant.id}
+          categories={restaurant.categories}
+        />
+      )}
 
       {/* QR Code */}
       <QrCodeCard slug={restaurant.slug} />

@@ -1,13 +1,20 @@
 "use client";
 
-import { Menu, Search, X } from "lucide-react";
-import { useRef, useState } from "react";
+import { LayoutDashboard, LogOut, Menu, Search, X } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
-export function LandingNavbar() {
+export function LandingNavbar({
+  user,
+}: {
+  user: { firstName: string; lastName: string } | null;
+}) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const formRef = useRef<HTMLFormElement>(null);
+
+  const displayName = user
+    ? `${user.firstName} ${user.lastName}`.trim()
+    : null;
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-lg">
@@ -41,7 +48,6 @@ export function LandingNavbar() {
         <div className="flex items-center gap-2">
           {/* Desktop search */}
           <form
-            ref={formRef}
             action="/restaurants"
             method="get"
             className="hidden items-center sm:flex"
@@ -57,23 +63,47 @@ export function LandingNavbar() {
             </div>
           </form>
 
-          <Button
-            size="sm"
-            className="hidden sm:inline-flex"
-            nativeButton={false}
-            render={<a href="/auth/login?action=signup" />}
-          >
-            شروع رایگان
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="hidden sm:inline-flex"
-            nativeButton={false}
-            render={<a href="/auth/login" />}
-          >
-            ورود
-          </Button>
+          {user ? (
+            <div className="hidden items-center gap-2 sm:flex">
+              <Button
+                size="sm"
+                nativeButton={false}
+                render={<a href="/admin" />}
+              >
+                <LayoutDashboard className="size-3.5" />
+                پنل مدیریت
+              </Button>
+              <form action="/auth/logout" method="POST">
+                <input type="hidden" name="_action" value="logout" />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  type="submit"
+                >
+                  <LogOut className="size-3.5" />
+                  خروج
+                </Button>
+              </form>
+            </div>
+          ) : (
+            <div className="hidden items-center gap-2 sm:flex">
+              <Button
+                size="sm"
+                nativeButton={false}
+                render={<a href="/auth/login?action=signup" />}
+              >
+                شروع رایگان
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                nativeButton={false}
+                render={<a href="/auth/login" />}
+              >
+                ورود
+              </Button>
+            </div>
+          )}
 
           {/* Mobile: search toggle */}
           <button
@@ -154,25 +184,50 @@ export function LandingNavbar() {
               سوالات متداول
             </a>
             <div className="my-1 border-t border-border/50" />
-            <Button
-              size="sm"
-              className="w-full"
-              nativeButton={false}
-              render={<a href="/auth/login?action=signup" />}
-              onClick={() => setMobileOpen(false)}
-            >
-              شروع رایگان
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="w-full"
-              nativeButton={false}
-              render={<a href="/auth/login" />}
-              onClick={() => setMobileOpen(false)}
-            >
-              ورود به پنل
-            </Button>
+            {user ? (
+              <>
+                <a
+                  href="/admin"
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  <LayoutDashboard className="size-4" />
+                  پنل مدیریت
+                </a>
+                <form action="/auth/logout" method="POST">
+                  <input type="hidden" name="_action" value="logout" />
+                  <button
+                    type="submit"
+                    className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  >
+                    <LogOut className="size-4" />
+                    خروج ({displayName})
+                  </button>
+                </form>
+              </>
+            ) : (
+              <>
+                <Button
+                  size="sm"
+                  className="w-full"
+                  nativeButton={false}
+                  render={<a href="/auth/login?action=signup" />}
+                  onClick={() => setMobileOpen(false)}
+                >
+                  شروع رایگان
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full"
+                  nativeButton={false}
+                  render={<a href="/auth/login" />}
+                  onClick={() => setMobileOpen(false)}
+                >
+                  ورود به پنل
+                </Button>
+              </>
+            )}
           </nav>
         </div>
       )}

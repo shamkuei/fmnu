@@ -1,11 +1,22 @@
 "use client";
 
-import { QrCode } from "lucide-react";
+import { useState, useCallback } from "react";
+import { QrCode, Download } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export function QrCodeCard({ slug }: { slug: string }) {
   const url = `https://fmnu.ir/${slug}`;
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
+  const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
+
+  const handleDownload = useCallback(() => {
+    const link = document.createElement("a");
+    link.href = qrApiUrl;
+    link.download = `qr-${slug}.png`;
+    link.click();
+  }, [qrApiUrl, slug]);
 
   return (
     <Card>
@@ -16,17 +27,38 @@ export function QrCodeCard({ slug }: { slug: string }) {
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col items-center gap-3">
-        <img src={qrUrl} alt="QR Code" className="size-48 rounded-lg" />
+        <div className="relative size-48">
+          {!loaded && !error && (
+            <div className="absolute inset-0 animate-pulse rounded-lg bg-muted" />
+          )}
+          {error ? (
+            <div className="flex size-full items-center justify-center rounded-lg border border-dashed">
+              <p className="text-xs text-muted-foreground">
+                خطا در بارگذاری QR
+              </p>
+            </div>
+          ) : (
+            <img
+              src={qrApiUrl}
+              alt="QR Code"
+              className={`size-48 rounded-lg transition-opacity ${loaded ? "opacity-100" : "opacity-0"}`}
+              onLoad={() => setLoaded(true)}
+              onError={() => setError(true)}
+            />
+          )}
+        </div>
         <p dir="ltr" className="font-mono text-xs text-muted-foreground">
           {url}
         </p>
-        <a
-          href={qrUrl}
-          download={`qr-${slug}.png`}
-          className="text-xs text-primary underline"
+        <Button
+          variant="ghost"
+          size="xs"
+          onClick={handleDownload}
+          disabled={error}
         >
+          <Download className="size-3" />
           دانلود QR کد
-        </a>
+        </Button>
       </CardContent>
     </Card>
   );

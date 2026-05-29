@@ -4,6 +4,7 @@ import { Loader2, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { updateRestaurantAction } from "@/actions/restaurants";
+import { IRAN_PROVINCES } from "@/lib/provinces";
 import { ImageUploader } from "@/components/admin/image-uploader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +23,7 @@ type Restaurant = {
   heroImageUrl: string | null;
   address: string | null;
   phone: string | null;
+  province: string | null;
   socialMedia: Record<string, string> | null;
   isAvailable: boolean;
   theme: Record<string, string> | null;
@@ -42,6 +44,7 @@ export function RestaurantInfoForm({ restaurant }: { restaurant: Restaurant }) {
   );
   const [address, setAddress] = useState(restaurant.address ?? "");
   const [phone, setPhone] = useState(restaurant.phone ?? "");
+  const [province, setProvince] = useState(restaurant.province ?? "");
   const [isAvailable, setIsAvailable] = useState(restaurant.isAvailable);
   const [socialInstagram, setSocialInstagram] = useState(
     restaurant.socialMedia?.instagram ?? "",
@@ -74,6 +77,7 @@ export function RestaurantInfoForm({ restaurant }: { restaurant: Restaurant }) {
         heroImageUrl: heroImageUrl.trim() || null,
         address: address.trim() || null,
         phone: phone.trim() || null,
+        province: province.trim() || null,
         socialMedia: Object.keys(socialMedia).length > 0 ? socialMedia : null,
         isAvailable,
       });
@@ -179,14 +183,20 @@ export function RestaurantInfoForm({ restaurant }: { restaurant: Restaurant }) {
         <h3 className="font-semibold text-foreground">اطلاعات تماس</h3>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="address">آدرس</Label>
-            <Textarea
-              id="address"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              rows={2}
-              placeholder="آدرس رستوران"
-            />
+            <Label htmlFor="province">استان</Label>
+            <select
+              id="province"
+              value={province}
+              onChange={(e) => setProvince(e.target.value)}
+              className="flex h-9 w-full rounded-lg border border-input bg-background px-3 text-sm text-foreground focus:border-ring focus:ring-2 focus:ring-ring/20 focus:outline-none"
+            >
+              <option value="">انتخاب استان...</option>
+              {IRAN_PROVINCES.map((p) => (
+                <option key={p} value={p}>
+                  {p}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="space-y-2">
             <Label htmlFor="phone">شماره تماس</Label>
@@ -198,6 +208,16 @@ export function RestaurantInfoForm({ restaurant }: { restaurant: Restaurant }) {
               placeholder="02112345678"
             />
           </div>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="address">آدرس</Label>
+          <Textarea
+            id="address"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            rows={2}
+            placeholder="آدرس رستوران"
+          />
         </div>
       </section>
 
