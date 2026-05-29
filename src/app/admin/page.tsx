@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Store } from "lucide-react";
-import { redirect } from "next/navigation";
 import { getMeAction } from "@/actions/auth";
 import { getMyRestaurantsAction } from "@/actions/restaurants";
 import { CreateRestaurantDialog } from "@/components/admin/create-restaurant-dialog";
@@ -9,8 +8,6 @@ import { Separator } from "@/components/ui/separator";
 
 export default async function AdminDashboard() {
   const user = await getMeAction();
-  if (!user) redirect("/auth/login");
-
   const restaurants = await getMyRestaurantsAction();
 
   return (

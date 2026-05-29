@@ -24,6 +24,7 @@ type Restaurant = {
   phone: string | null;
   socialMedia: Record<string, string> | null;
   isAvailable: boolean;
+  theme: Record<string, string> | null;
 };
 
 export function RestaurantInfoForm({ restaurant }: { restaurant: Restaurant }) {

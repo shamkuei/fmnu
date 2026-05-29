@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LayoutGrid, Pencil, QrCode, UtensilsCrossed } from "lucide-react";
+import { LayoutGrid, Palette, Pencil, QrCode, UtensilsCrossed } from "lucide-react";
 import { notFound } from "next/navigation";
 import {
   getRestaurantAction,
@@ -8,6 +8,7 @@ import {
 import { DeleteRestaurantButton } from "@/components/admin/delete-restaurant-button";
 import { QrCodeCard } from "@/components/admin/qr-code-card";
 import { RestaurantInfoForm } from "@/components/admin/restaurant-info-form";
+import { ThemeEditor } from "@/components/admin/theme-editor";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -66,6 +67,10 @@ export default async function RestaurantDetailPage({
           <TabsTrigger value="edit">
             <Pencil className="size-4" />
             ویرایش
+          </TabsTrigger>
+          <TabsTrigger value="theme">
+            <Palette className="size-4" />
+            تم
           </TabsTrigger>
         </TabsList>
 
@@ -143,6 +148,17 @@ export default async function RestaurantDetailPage({
           <Card>
             <CardContent className="pt-6">
               <RestaurantInfoForm restaurant={restaurant} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="theme" className="mt-6">
+          <Card>
+            <CardContent className="pt-6">
+              <ThemeEditor
+                restaurantId={restaurant.id}
+                theme={restaurant.theme as Record<string, string> | null}
+              />
             </CardContent>
           </Card>
         </TabsContent>
