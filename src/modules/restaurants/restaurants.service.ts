@@ -89,7 +89,7 @@ export async function updateRestaurant(
 ) {
   const [updated] = await db
     .update(restaurants)
-    .set(data)
+    .set({ ...data, updatedAt: new Date() })
     .where(eq(restaurants.id, restaurantId))
     .returning();
   return updated;

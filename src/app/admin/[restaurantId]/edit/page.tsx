@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
 import { getRestaurantAction } from "@/actions/restaurants";
-import { MenuEditor } from "@/components/admin/menu-editor";
+import { RestaurantInfoForm } from "@/components/admin/restaurant-info-form";
+import { Card, CardContent } from "@/components/ui/card";
 
-export default async function MenuManagerPage({
+export default async function EditPage({
   params,
 }: {
   params: Promise<{ restaurantId: string }>;
@@ -18,5 +19,11 @@ export default async function MenuManagerPage({
 
   if (!restaurant) notFound();
 
-  return <MenuEditor restaurant={restaurant} />;
+  return (
+    <Card>
+      <CardContent className="pt-6">
+        <RestaurantInfoForm restaurant={restaurant} />
+      </CardContent>
+    </Card>
+  );
 }

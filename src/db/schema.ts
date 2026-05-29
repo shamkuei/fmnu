@@ -89,6 +89,9 @@ export const restaurants = sqliteTable("restaurant", {
   createdAt: integer("created_at", { mode: "timestamp" })
     .default(sql`(unixepoch())`)
     .notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" })
+    .$defaultFn(() => new Date())
+    .notNull(),
 });
 
 export const restaurantAdmins = sqliteTable(
