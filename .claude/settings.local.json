@@ -19,7 +19,9 @@
       "Bash(find /home/aliz/programing/fmnu/src/app/admin/[restaurantId] -type f)",
       "Bash(npx drizzle-kit *)",
       "Bash(find *)",
-      "Bash(node *)"
+      "Bash(node *)",
+      "Bash(sqlite3 /home/aliz/programing/fmnu/dev.db \"SELECT slug, name FROM restaurant LIMIT 3;\")",
+      "Bash(sqlite3 *)"
     ]
   }
 }

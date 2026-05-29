@@ -1,4 +1,4 @@
-import { and, count, eq } from "drizzle-orm";
+import { and, count, eq, like, or, sql } from "drizzle-orm";
 import { db } from "@/db/index";
 import {
   categories,
@@ -6,6 +6,37 @@ import {
   restaurantAdmins,
   restaurants,
 } from "@/db/schema";
+
+export function searchPublicRestaurants(query?: string) {
+  const cols = {
+    id: restaurants.id,
+    slug: restaurants.slug,
+    name: restaurants.name,
+    brandText: restaurants.brandText,
+    description: restaurants.description,
+    logoUrl: restaurants.logoUrl,
+    address: restaurants.address,
+  };
+
+  if (query) {
+    return db
+      .select(cols)
+      .from(restaurants)
+      .where(
+        and(
+          eq(restaurants.isAvailable, true),
+          sql`(${restaurants.name} LIKE ${`%${query}%`} OR COALESCE(${restaurants.brandText}, '') LIKE ${`%${query}%`} OR COALESCE(${restaurants.description}, '') LIKE ${`%${query}%`})`,
+        ),
+      )
+      .orderBy(sql`${restaurants.createdAt} DESC`);
+  }
+
+  return db
+    .select(cols)
+    .from(restaurants)
+    .where(eq(restaurants.isAvailable, true))
+    .orderBy(sql`${restaurants.createdAt} DESC`);
+}
 
 export function getRestaurantBySlug(slug: string) {
   return db.query.restaurants.findFirst({
