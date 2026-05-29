@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
@@ -175,19 +174,12 @@ export function MenuEditor({ restaurant }: { restaurant: Restaurant }) {
   return (
     <>
       <div className="mb-6 flex items-center justify-between">
-        <Link
-          href={`/admin/${restaurant.id}`}
-          className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
-        >
-          بازگشت به {restaurant.name}
-        </Link>
+        <h1 className="text-xl font-bold text-foreground">مدیریت منو</h1>
         <Button onClick={openNewCategory}>
           <Plus />
           دسته‌بندی جدید
         </Button>
       </div>
-
-      <h1 className="mb-6 text-2xl font-bold text-foreground">مدیریت منو</h1>
 
       {restaurant.categories.length === 0 && (
         <div className="flex flex-col items-center gap-3 py-12 text-center">
