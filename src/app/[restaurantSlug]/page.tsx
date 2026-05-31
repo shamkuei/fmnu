@@ -21,9 +21,14 @@ export async function generateMetadata({
     return { title: "یافت نشد" };
   }
 
-  const title = `${restaurant.name} | منو`;
+  const title = `${restaurant.name} | منوی آنلاین رستوران`;
   const description =
-    restaurant.description || `منوی آنلاین ${restaurant.name}`;
+    restaurant.description ||
+    `مشاهده منوی آنلاین ${restaurant.name}. قیمت‌ها، دسته‌بندی‌ها و اطلاعات تماس`;
+  const domain = process.env.NEXT_PUBLIC_DOMAIN || "fmnu.ir";
+  const protocol =
+    process.env.NODE_ENV === "production" ? "https" : "http";
+  const url = `${protocol}://${restaurantSlug}.${domain}`;
 
   return {
     title,
@@ -31,9 +36,31 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
-      images: restaurant.heroImageUrl ? [{ url: restaurant.heroImageUrl }] : [],
+      url,
+      siteName: "فستمنو",
+      locale: "fa_IR",
       type: "website",
+      images: restaurant.heroImageUrl
+        ? [
+            {
+              url: restaurant.heroImageUrl,
+              width: 1200,
+              height: 630,
+              alt: restaurant.name,
+            },
+          ]
+        : [],
     },
+    twitter: {
+      card: restaurant.heroImageUrl ? "summary_large_image" : "summary",
+      title,
+      description,
+      images: restaurant.heroImageUrl ? [restaurant.heroImageUrl] : [],
+    },
+    alternates: { canonical: url },
+    robots: restaurant.isAvailable
+      ? { index: true, follow: true }
+      : { index: false, follow: false },
   };
 }
 

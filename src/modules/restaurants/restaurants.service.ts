@@ -8,7 +8,7 @@ import {
   restaurants,
 } from "@/db/schema";
 
-export function searchPublicRestaurants(query?: string) {
+export function searchPublicRestaurants(query?: string, province?: string) {
   const cols = {
     id: restaurants.id,
     slug: restaurants.slug,
@@ -20,23 +20,22 @@ export function searchPublicRestaurants(query?: string) {
     province: restaurants.province,
   };
 
+  const conditions = [eq(restaurants.isAvailable, true)];
+
   if (query) {
-    return db
-      .select(cols)
-      .from(restaurants)
-      .where(
-        and(
-          eq(restaurants.isAvailable, true),
-          sql`(${restaurants.name} LIKE ${`%${query}%`} OR COALESCE(${restaurants.brandText}, '') LIKE ${`%${query}%`} OR COALESCE(${restaurants.description}, '') LIKE ${`%${query}%`})`,
-        ),
-      )
-      .orderBy(sql`${restaurants.createdAt} DESC`);
+    conditions.push(
+      sql`(${restaurants.name} LIKE ${`%${query}%`} OR COALESCE(${restaurants.brandText}, '') LIKE ${`%${query}%`} OR COALESCE(${restaurants.description}, '') LIKE ${`%${query}%`})`,
+    );
+  }
+
+  if (province) {
+    conditions.push(eq(restaurants.province, province));
   }
 
   return db
     .select(cols)
     .from(restaurants)
-    .where(eq(restaurants.isAvailable, true))
+    .where(and(...conditions))
     .orderBy(sql`${restaurants.createdAt} DESC`);
 }
 

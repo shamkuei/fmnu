@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Search } from "lucide-react";
 import { searchPublicRestaurants } from "@/modules/restaurants/restaurants.service";
+import { ProvinceFilter } from "@/components/province-filter";
 
 export const metadata: Metadata = {
   title: "جستجوی رستوران‌ها | فستمنو",
@@ -10,10 +11,13 @@ export const metadata: Metadata = {
 export default async function RestaurantsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{ q?: string; province?: string }>;
 }) {
-  const { q } = await searchParams;
-  const restaurants = await searchPublicRestaurants(q || undefined);
+  const { q, province } = await searchParams;
+  const restaurants = await searchPublicRestaurants(
+    q || undefined,
+    province || undefined,
+  );
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -37,23 +41,26 @@ export default async function RestaurantsPage({
         </h1>
 
         <form action="/restaurants" method="get" className="mb-8">
-          <div className="relative max-w-md">
-            <Search className="absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-            <input
-              type="search"
-              name="q"
-              defaultValue={q || ""}
-              placeholder="جستجوی نام رستوران..."
-              className="h-11 w-full rounded-xl border border-input bg-background pr-10 pl-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:ring-2 focus:ring-ring/20 focus:outline-none"
-            />
+          <div className="flex flex-wrap gap-3 max-w-2xl">
+            <div className="relative min-w-[200px] flex-1">
+              <Search className="absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <input
+                type="search"
+                name="q"
+                defaultValue={q || ""}
+                placeholder="جستجوی نام رستوران..."
+                className="h-11 w-full rounded-xl border border-input bg-background pr-10 pl-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:ring-2 focus:ring-ring/20 focus:outline-none"
+              />
+            </div>
+            <ProvinceFilter value={province} />
           </div>
         </form>
 
         {restaurants.length === 0 ? (
           <div className="py-20 text-center">
             <p className="text-lg text-muted-foreground">
-              {q
-                ? `رستورانی با نام "${q}" پیدا نشد.`
+              {q || province
+                ? `رستورانی${province ? ` در استان "${province}"` : ""}${q ? ` با نام "${q}"` : ""} پیدا نشد.`
                 : "هنوز رستورانی ثبت نشده."}
             </p>
           </div>
