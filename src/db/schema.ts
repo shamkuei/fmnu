@@ -133,6 +133,22 @@ export const categories = sqliteTable(
   (self) => [index("idx_categories_restaurant").on(self.restaurantId)],
 );
 
+export const pageViews = sqliteTable(
+  "page_view",
+  {
+    id: text()
+      .$defaultFn(() => crypto.randomUUID())
+      .primaryKey(),
+    restaurantId: text("restaurant_id")
+      .notNull()
+      .references(() => restaurants.id, { onDelete: "cascade" }),
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .default(sql`(unixepoch())`)
+      .notNull(),
+  },
+  (self) => [index("idx_page_views_restaurant").on(self.restaurantId)],
+);
+
 export const products = sqliteTable(
   "product",
   {

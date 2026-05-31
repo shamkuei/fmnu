@@ -2,6 +2,7 @@ import { cache } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getRestaurantBySlug } from "@/modules/restaurants/restaurants.service";
+import { trackPageView } from "@/modules/restaurants/restaurants.service";
 import { ContactInfo } from "@/components/menu/contact-info";
 import { MenuContent } from "@/components/menu/menu-content";
 import { MenuHeader } from "@/components/menu/menu-header";
@@ -45,6 +46,8 @@ export default async function MenuPage({
   const restaurant = await getCachedRestaurant(restaurantSlug);
 
   if (!restaurant) notFound();
+
+  trackPageView(restaurant.id);
 
   const themeVars = {
     "--background": "var(--bg-base, #ffffff)",

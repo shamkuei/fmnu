@@ -1,7 +1,8 @@
-import { and, count, eq, like, or, sql } from "drizzle-orm";
+import { and, count, eq, gte, like, or, sql } from "drizzle-orm";
 import { db } from "@/db/index";
 import {
   categories,
+  pageViews,
   products,
   restaurantAdmins,
   restaurants,
@@ -133,6 +134,10 @@ export async function deleteRestaurant(restaurantId: string) {
   await db.delete(restaurants).where(eq(restaurants.id, restaurantId));
 }
 
+export async function trackPageView(restaurantId: string) {
+  await db.insert(pageViews).values({ restaurantId });
+}
+
 export async function getRestaurantStats(restaurantId: string) {
   const [cat] = await db
     .select({ count: count() })
@@ -151,10 +156,30 @@ export async function getRestaurantStats(restaurantId: string) {
         eq(products.available, true),
       ),
     );
+
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+
+  const [total] = await db
+    .select({ count: count() })
+    .from(pageViews)
+    .where(eq(pageViews.restaurantId, restaurantId));
+  const [today] = await db
+    .select({ count: count() })
+    .from(pageViews)
+    .where(
+      and(
+        eq(pageViews.restaurantId, restaurantId),
+        gte(pageViews.createdAt, startOfToday),
+      ),
+    );
+
   return {
     categories: cat.count,
     products: prod.count,
     available: avail.count,
+    totalViews: total.count,
+    todayViews: today.count,
   };
 }
 

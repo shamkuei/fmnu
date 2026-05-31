@@ -7,7 +7,7 @@ import { QrCodeCard } from "@/components/admin/qr-code-card";
 import { QuickActions } from "@/components/admin/quick-actions";
 import { EmptyStateActions } from "@/components/admin/empty-state-actions";
 import { Card, CardContent } from "@/components/ui/card";
-import { Eye, LayoutGrid, QrCode, UtensilsCrossed } from "lucide-react";
+import { Eye, LayoutGrid, QrCode, UtensilsCrossed, BarChart3 } from "lucide-react";
 import Link from "next/link";
 
 export default async function OverviewPage({
@@ -26,7 +26,7 @@ export default async function OverviewPage({
 
   if (!restaurant) notFound();
 
-  let stats = { categories: 0, products: 0, available: 0 };
+  let stats = { categories: 0, products: 0, available: 0, totalViews: 0, todayViews: 0 };
   try {
     stats = await getRestaurantStatsAction(restaurantId);
   } catch {
@@ -38,7 +38,7 @@ export default async function OverviewPage({
   return (
     <div className="space-y-6">
       {/* Stats */}
-      <div className="grid gap-4 grid-cols-2 sm:grid-cols-4">
+      <div className="grid gap-4 grid-cols-2 sm:grid-cols-5">
         <Card>
           <CardContent className="flex flex-col items-center gap-2 pt-6 text-center">
             <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
@@ -74,18 +74,24 @@ export default async function OverviewPage({
         </Card>
         <Card>
           <CardContent className="flex flex-col items-center gap-2 pt-6 text-center">
-            <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <div className="flex size-10 items-center justify-center rounded-lg bg-blue-500/10 text-blue-600">
+              <BarChart3 className="size-5" />
+            </div>
+            <p className="text-2xl font-bold text-foreground">
+              {stats.todayViews.toLocaleString("fa-IR")}
+            </p>
+            <p className="text-xs text-muted-foreground">بازدید امروز</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="flex flex-col items-center gap-2 pt-6 text-center">
+            <div className="flex size-10 items-center justify-center rounded-lg bg-blue-500/10 text-blue-600">
               <Eye className="size-5" />
             </div>
-            <a
-              href={`/${restaurant.slug}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm font-medium text-primary underline"
-            >
-              مشاهده منو
-            </a>
-            <p className="text-xs text-muted-foreground">لینک عمومی</p>
+            <p className="text-2xl font-bold text-foreground">
+              {stats.totalViews.toLocaleString("fa-IR")}
+            </p>
+            <p className="text-xs text-muted-foreground">کل بازدید</p>
           </CardContent>
         </Card>
       </div>

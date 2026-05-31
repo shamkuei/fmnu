@@ -26,6 +26,7 @@ export const relations = defineRelations(schema, (r) => ({
     admins: r.many.restaurantAdmins(),
     categories: r.many.categories(),
     products: r.many.products(),
+    pageViews: r.many.pageViews(),
   },
 
   restaurantAdmins: {
@@ -58,6 +59,14 @@ export const relations = defineRelations(schema, (r) => ({
     }),
     restaurant: r.one.restaurants({
       from: r.products.restaurantId,
+      to: r.restaurants.id,
+      optional: false,
+    }),
+  },
+
+  pageViews: {
+    restaurant: r.one.restaurants({
+      from: r.pageViews.restaurantId,
       to: r.restaurants.id,
       optional: false,
     }),

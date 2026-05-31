@@ -1,9 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   checkCodeAction,
+  getMeAction,
   otpLoginAction,
   requestOtpAction,
 } from "@/actions/auth";
@@ -20,6 +21,12 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [codeValid, setCodeValid] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    getMeAction().then((user) => {
+      if (user) router.replace("/admin");
+    });
+  }, [router]);
 
   async function handleRequestOtp(e: React.FormEvent) {
     e.preventDefault();
@@ -58,7 +65,8 @@ export default function LoginPage() {
 
     try {
       await otpLoginAction(phone, code);
-      router.push("/admin");
+      const params = new URLSearchParams(window.location.search);
+      router.push(params.get("callbackUrl") || "/admin");
     } catch (err: any) {
       setError(err?.message ?? "ورود ناموفق بود");
     } finally {
