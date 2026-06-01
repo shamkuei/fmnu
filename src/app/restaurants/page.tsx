@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Search } from "lucide-react";
 import { searchPublicRestaurants } from "@/modules/restaurants/restaurants.service";
 import { ProvinceFilter } from "@/components/province-filter";
+import { getRestaurantUrl } from "@/lib/urls";
 
 export const metadata: Metadata = {
   title: "جستجوی رستوران‌ها | فستمنو",
@@ -69,7 +70,7 @@ export default async function RestaurantsPage({
             {restaurants.map((r) => (
               <a
                 key={r.id}
-                href={`/${r.slug}`}
+                href={getRestaurantUrl(r.slug)}
                 className="group rounded-xl border border-border bg-card p-5 transition-shadow hover:shadow-md"
               >
                 <div className="mb-3 flex items-center gap-3">

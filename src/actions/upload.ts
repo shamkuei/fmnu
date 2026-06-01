@@ -3,12 +3,14 @@
 import { writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { randomBytes } from "node:crypto";
+import { verifyOrigin } from "@/lib/csrf";
 
 const UPLOAD_DIR = join(process.cwd(), "public", "uploads");
 const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 
 export async function uploadFile(formData: FormData) {
+  await verifyOrigin();
   const file = formData.get("file") as File | null;
   if (!file) throw new Error("فایلی انتخاب نشده");
 

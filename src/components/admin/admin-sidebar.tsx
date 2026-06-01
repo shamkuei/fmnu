@@ -10,6 +10,7 @@ import {
   Settings,
   UtensilsCrossed,
 } from "lucide-react";
+import { getRestaurantUrl } from "@/lib/urls";
 
 const navItems = [
   { href: "", label: "نمای کلی", icon: LayoutGrid },
@@ -57,7 +58,7 @@ export function AdminSidebar({
           <div>
             <h1 className="text-lg font-bold text-foreground">{name}</h1>
             <p dir="ltr" className="font-mono text-xs text-muted-foreground">
-              fmnu.ir/{slug}
+              {getRestaurantUrl(slug).replace("https://", "")}
             </p>
           </div>
           <nav className="space-y-1">
@@ -69,7 +70,7 @@ export function AdminSidebar({
             ))}
           </nav>
           <Link
-            href={`/${slug}`}
+            href={getRestaurantUrl(slug)}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm text-foreground hover:bg-muted"

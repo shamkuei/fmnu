@@ -4,9 +4,10 @@ import { useState, useCallback } from "react";
 import { QrCode, Download } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { getRestaurantUrl } from "@/lib/urls";
 
 export function QrCodeCard({ slug }: { slug: string }) {
-  const url = `https://fmnu.ir/${slug}`;
+  const url = getRestaurantUrl(slug);
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
   const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;

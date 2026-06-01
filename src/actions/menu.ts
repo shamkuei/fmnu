@@ -5,6 +5,7 @@ import { db } from "@/db/index";
 import { categories as categoriesTable, products as productsTable } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { ForbiddenException } from "@/lib/errors";
+import { verifyOrigin } from "@/lib/csrf";
 import { getSessionFromSessionId } from "@/modules/auth/authorizer.service";
 import {
   createCategory,
@@ -44,6 +45,7 @@ export async function createCategoryAction(input: {
   name: string;
   sortOrder?: number;
 }) {
+  await verifyOrigin();
   const user = await getAuthUser();
   if (!user) throw new Error("NOT_AUTHENTICATED");
   const admin = await isRestaurantAdmin(user.id, input.restaurantId);
@@ -57,6 +59,7 @@ export async function updateCategoryAction(input: {
   name?: string;
   sortOrder?: number;
 }) {
+  await verifyOrigin();
   const user = await getAuthUser();
   if (!user) throw new Error("NOT_AUTHENTICATED");
   const admin = await isRestaurantAdmin(user.id, input.restaurantId);
@@ -68,6 +71,7 @@ export async function deleteCategoryAction(
   restaurantId: string,
   categoryId: string,
 ) {
+  await verifyOrigin();
   const user = await getAuthUser();
   if (!user) throw new Error("NOT_AUTHENTICATED");
   const admin = await isRestaurantAdmin(user.id, restaurantId);
@@ -85,6 +89,7 @@ export async function createProductAction(input: {
   imageUrl?: string;
   sortOrder?: number;
 }) {
+  await verifyOrigin();
   const user = await getAuthUser();
   if (!user) throw new Error("NOT_AUTHENTICATED");
   const admin = await isRestaurantAdmin(user.id, input.restaurantId);
@@ -97,6 +102,7 @@ export async function updateProductAction(
   productId: string,
   updates: Parameters<typeof updateProduct>[1],
 ) {
+  await verifyOrigin();
   const user = await getAuthUser();
   if (!user) throw new Error("NOT_AUTHENTICATED");
   const admin = await isRestaurantAdmin(user.id, restaurantId);
@@ -108,6 +114,7 @@ export async function deleteProductAction(
   restaurantId: string,
   productId: string,
 ) {
+  await verifyOrigin();
   const user = await getAuthUser();
   if (!user) throw new Error("NOT_AUTHENTICATED");
   const admin = await isRestaurantAdmin(user.id, restaurantId);
@@ -120,6 +127,7 @@ export async function reorderCategoriesAction(
   restaurantId: string,
   orderedIds: string[],
 ) {
+  await verifyOrigin();
   const user = await getAuthUser();
   if (!user) throw new Error("NOT_AUTHENTICATED");
   const admin = await isRestaurantAdmin(user.id, restaurantId);
@@ -138,6 +146,7 @@ export async function reorderProductsAction(
   restaurantId: string,
   orderedIds: string[],
 ) {
+  await verifyOrigin();
   const user = await getAuthUser();
   if (!user) throw new Error("NOT_AUTHENTICATED");
   const admin = await isRestaurantAdmin(user.id, restaurantId);

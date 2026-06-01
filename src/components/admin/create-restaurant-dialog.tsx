@@ -108,18 +108,18 @@ export function CreateRestaurantDialog() {
           <div className="space-y-2">
             <Label htmlFor="slug">آدرس زیردامنه</Label>
             <div className="flex items-center gap-0" dir="ltr">
-              <span
-                className="shrink-0 rounded-s-lg border border-e-0 border-input bg-muted px-2 py-1.5 text-sm text-muted-foreground"
-              >
-                fmnu.ir/
-              </span>
               <Input
                 id="slug"
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
                 placeholder="dolopi"
-                className="rounded-s-none font-mono"
+                className="rounded-e-none font-mono"
               />
+              <span
+                className="shrink-0 rounded-e-lg border border-s-0 border-input bg-muted px-2 py-1.5 text-sm text-muted-foreground"
+              >
+                .fmnu.ir
+              </span>
             </div>
           </div>
           <div className="space-y-2">

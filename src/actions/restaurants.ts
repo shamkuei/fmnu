@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import z from "zod";
 import { db } from "@/db/index";
 import { ForbiddenException } from "@/lib/errors";
+import { verifyOrigin } from "@/lib/csrf";
 import { getSessionFromSessionId } from "@/modules/auth/authorizer.service";
 import {
   createRestaurant,
@@ -52,6 +53,7 @@ const CreateRestaurantSchema = z.object({
 export async function createRestaurantAction(
   input: z.input<typeof CreateRestaurantSchema>,
 ) {
+  await verifyOrigin();
   const user = await getAuthUser();
   if (!user) throw new Error("NOT_AUTHENTICATED");
   const data = CreateRestaurantSchema.parse(input);
@@ -82,6 +84,7 @@ const UpdateRestaurantSchema = z.object({
 export async function updateRestaurantAction(
   input: z.input<typeof UpdateRestaurantSchema>,
 ) {
+  await verifyOrigin();
   const user = await getAuthUser();
   if (!user) throw new Error("NOT_AUTHENTICATED");
   const data = UpdateRestaurantSchema.parse(input);
@@ -92,6 +95,7 @@ export async function updateRestaurantAction(
 }
 
 export async function deleteRestaurantAction(restaurantId: string) {
+  await verifyOrigin();
   const user = await getAuthUser();
   if (!user) throw new Error("NOT_AUTHENTICATED");
   const admin = await isRestaurantAdmin(user.id, restaurantId);

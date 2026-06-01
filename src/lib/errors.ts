@@ -52,3 +52,9 @@ export class ConflictException extends BaseException {
     super(message, 409);
   }
 }
+
+export class TooManyRequestsException extends BaseException {
+  constructor(message: string = "Too Many Requests") {
+    super(message, 429);
+  }
+}

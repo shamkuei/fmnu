@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import z from "zod";
 import { db } from "@/db/index";
 import { sessions, users } from "@/db/schema";
+import { verifyOrigin } from "@/lib/csrf";
 import { getSessionFromSessionId } from "@/modules/auth/authorizer.service";
 import { checkCodeFlow } from "@/modules/auth/flows/check-code";
 import { otpLogin } from "@/modules/auth/flows/otp-login";
@@ -13,6 +14,7 @@ import { userRolesWith } from "@/modules/users/users.service";
 import { resendCode } from "@/modules/verification/verification.service";
 
 export async function requestOtpAction(phone: string) {
+  await verifyOrigin();
   return requestOtp({ rawInput: { phone } });
 }
 
@@ -21,6 +23,7 @@ export async function checkCodeAction(phone: string, code: string) {
 }
 
 export async function otpLoginAction(phone: string, code: string) {
+  await verifyOrigin();
   const result = await otpLogin({ rawInput: { phone, code } });
 
   const cookieStore = await cookies();
@@ -53,6 +56,7 @@ export async function getMeAction() {
 }
 
 export async function logoutAction() {
+  await verifyOrigin();
   const cookieStore = await cookies();
   const sessionId = cookieStore.get("session-id")?.value;
   if (sessionId) {
@@ -65,6 +69,7 @@ export async function logoutAction() {
 }
 
 export async function resendOtpAction(verificationId: string) {
+  await verifyOrigin();
   return resendCode(verificationId);
 }
 
@@ -77,6 +82,7 @@ const UpdateProfileSchema = z.object({
 export async function updateProfileAction(
   input: z.input<typeof UpdateProfileSchema>,
 ) {
+  await verifyOrigin();
   const cookieStore = await cookies();
   const sessionId = cookieStore.get("session-id")?.value;
   if (!sessionId) throw new Error("NOT_AUTHENTICATED");

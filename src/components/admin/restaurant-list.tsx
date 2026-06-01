@@ -15,6 +15,7 @@ import { deleteRestaurantAction } from "@/actions/restaurants";
 import { DeleteConfirmDialog } from "@/components/admin/delete-confirm-dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { getRestaurantUrl } from "@/lib/urls";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -106,7 +107,7 @@ function RestaurantCard({
                   dir="ltr"
                   className="font-mono text-xs text-muted-foreground truncate"
                 >
-                  fmnu.ir/{restaurant.slug}
+                  {getRestaurantUrl(restaurant.slug).replace("https://", "")}
                 </p>
               </div>
               <DropdownMenu>
@@ -147,7 +148,7 @@ function RestaurantCard({
                 مدیریت
               </Link>
               <Link
-                href={`/${restaurant.slug}`}
+                href={getRestaurantUrl(restaurant.slug)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"

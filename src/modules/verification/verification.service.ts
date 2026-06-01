@@ -1,9 +1,13 @@
 import { randomInt } from "node:crypto";
-import { and, eq, gt, isNull } from "drizzle-orm";
+import { and, count, eq, gt, isNull } from "drizzle-orm";
 import { db } from "@/db/index";
 import { verifications } from "@/db/schema";
+import { TooManyRequestsException } from "@/lib/errors";
 import { sendSMS } from "@/modules/phone/sender.service";
 import type { VerificationReason } from "./reasons";
+
+const MAX_RESEND_COUNT = 5;
+const MAX_DAILY_VERIFICATIONS = 10;
 
 export function generateCode() {
   return randomInt(100000, 1000000).toString();
@@ -37,7 +41,30 @@ export async function createVerificationRecord(
   const existingVerificationRecord = rows[0];
 
   if (existingVerificationRecord) {
+    if (existingVerificationRecord.resendCount >= MAX_RESEND_COUNT) {
+      throw new TooManyRequestsException(
+        "تعداد درخواست‌های مجاز به پایان رسیده است",
+      );
+    }
     return { verification: existingVerificationRecord, isNew: false };
+  }
+
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+  const [dailyRow] = await db
+    .select({ count: count() })
+    .from(verifications)
+    .where(
+      and(
+        eq(verifications.phone, phone),
+        eq(verifications.reason, reason),
+        gt(verifications.createdAt, todayStart),
+      ),
+    );
+  if (dailyRow.count >= MAX_DAILY_VERIFICATIONS) {
+    throw new TooManyRequestsException(
+      "تعداد درخواست‌های روزانه به پایان رسیده است",
+    );
   }
 
   const code = generateCode();
@@ -113,6 +140,11 @@ export async function resendCode(verificationId: string) {
   if (!record) return null;
   if (record.usedAt) return null;
   if (record.nextResend > new Date()) return null;
+  if (record.resendCount >= MAX_RESEND_COUNT) {
+    throw new TooManyRequestsException(
+      "تعداد درخواست‌های مجاز به پایان رسیده است",
+    );
+  }
 
   const newCode = generateCode();
   await db
