@@ -1,0 +1,19 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - db-data:/app/data
+      - uploads:/app/public/uploads
+    environment:
+      - DATABASE_URL=/app/data/prod.db
+      - NO_SMS=false
+      - SMS_USERNAME=${SMS_USERNAME}
+      - SMS_PASSWORD=${SMS_PASSWORD}
+      - SMS_FROM=${SMS_FROM}
+    restart: unless-stopped
+
+volumes:
+  db-data:
+  uploads:
