@@ -83,6 +83,7 @@ export const restaurants = sqliteTable("restaurant", {
   address: text(),
   phone: text(),
   province: text(),
+  city: text(),
   socialMedia: text("social_media", { mode: "json" }).$type<
     Record<string, string>
   >(),
@@ -113,6 +114,37 @@ export const restaurantAdmins = sqliteTable(
     index("idx_restaurant_admins_user").on(self.userId),
   ],
 );
+
+// ============================================================================
+// Site Settings & Testimonials
+// ============================================================================
+
+export const siteSettings = sqliteTable("site_settings", {
+  id: integer().primaryKey().default(1),
+  showSocialProof: integer("show_social_proof", { mode: "boolean" })
+    .default(true)
+    .notNull(),
+  showTestimonials: integer("show_testimonials", { mode: "boolean" })
+    .default(true)
+    .notNull(),
+});
+
+export const testimonials = sqliteTable("testimonial", {
+  id: text()
+    .$defaultFn(() => crypto.randomUUID())
+    .primaryKey(),
+  name: text().notNull(),
+  role: text().notNull(),
+  text: text().notNull(),
+  rating: integer().notNull().default(5),
+  isVisible: integer("is_visible", { mode: "boolean" })
+    .default(true)
+    .notNull(),
+  sortOrder: integer("sort_order").notNull().default(0),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .default(sql`(unixepoch())`)
+    .notNull(),
+});
 
 // ============================================================================
 // Menu

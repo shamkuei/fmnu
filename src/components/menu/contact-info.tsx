@@ -5,6 +5,7 @@ type ContactInfoProps = {
   address: string | null;
   phone: string | null;
   province: string | null;
+  city: string | null;
   socialMedia: Record<string, string> | null;
 };
 
@@ -13,16 +14,17 @@ export function ContactInfo({
   address,
   phone,
   province,
+  city,
   socialMedia,
 }: ContactInfoProps) {
-  if (!address && !phone && !province && !socialMedia) return null;
+  if (!address && !phone && !province && !city && !socialMedia) return null;
 
   return (
     <div className="space-y-3 rounded-lg border border-border bg-card p-4">
-      {province && (
+      {(province || city) && (
         <p className="text-sm text-muted-foreground">
-          <span className="font-medium text-foreground">استان:</span>{" "}
-          {province}
+          <span className="font-medium text-foreground">موقعیت:</span>{" "}
+          {[province, city].filter(Boolean).join("، ")}
         </p>
       )}
       {address && (

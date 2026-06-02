@@ -101,9 +101,9 @@ export default async function RestaurantsPage({
                     {r.description}
                   </p>
                 )}
-                {(r.province || r.address) && (
+                {(r.province || (r as any).city || r.address) && (
                   <p className="text-xs text-muted-foreground">
-                    {[r.province, r.address].filter(Boolean).join("، ")}
+                    {[r.province, (r as any).city, r.address].filter(Boolean).join("، ")}
                   </p>
                 )}
               </a>

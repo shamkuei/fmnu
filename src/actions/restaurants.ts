@@ -46,6 +46,7 @@ const CreateRestaurantSchema = z.object({
   address: z.string().max(500).optional(),
   phone: z.string().max(20).optional(),
   province: z.string().max(100).optional(),
+  city: z.string().max(100).optional(),
   socialMedia: z.record(z.string(), z.string()).optional(),
   isAvailable: z.boolean().optional(),
 });
@@ -76,6 +77,7 @@ const UpdateRestaurantSchema = z.object({
   address: z.string().max(500).nullable().optional(),
   phone: z.string().max(20).nullable().optional(),
   province: z.string().max(100).nullable().optional(),
+  city: z.string().max(100).nullable().optional(),
   socialMedia: z.record(z.string(), z.string()).nullable().optional(),
   isAvailable: z.boolean().optional(),
   theme: z.record(z.string(), z.string()).nullable().optional(),

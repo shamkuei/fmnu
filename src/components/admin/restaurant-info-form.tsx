@@ -4,7 +4,7 @@ import { Loader2, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { updateRestaurantAction } from "@/actions/restaurants";
-import { IRAN_PROVINCES } from "@/lib/provinces";
+import { CITIES_BY_PROVINCE, IRAN_PROVINCES } from "@/lib/provinces";
 import { ImageUploader } from "@/components/admin/image-uploader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,6 +24,7 @@ type Restaurant = {
   address: string | null;
   phone: string | null;
   province: string | null;
+  city: string | null;
   socialMedia: Record<string, string> | null;
   isAvailable: boolean;
   theme: Record<string, string> | null;
@@ -45,6 +46,7 @@ export function RestaurantInfoForm({ restaurant }: { restaurant: Restaurant }) {
   const [address, setAddress] = useState(restaurant.address ?? "");
   const [phone, setPhone] = useState(restaurant.phone ?? "");
   const [province, setProvince] = useState(restaurant.province ?? "");
+  const [city, setCity] = useState(restaurant.city ?? "");
   const [isAvailable, setIsAvailable] = useState(restaurant.isAvailable);
   const [socialInstagram, setSocialInstagram] = useState(
     restaurant.socialMedia?.instagram ?? "",
@@ -78,6 +80,7 @@ export function RestaurantInfoForm({ restaurant }: { restaurant: Restaurant }) {
         address: address.trim() || null,
         phone: phone.trim() || null,
         province: province.trim() || null,
+        city: city.trim() || null,
         socialMedia: Object.keys(socialMedia).length > 0 ? socialMedia : null,
         isAvailable,
       });
@@ -187,7 +190,10 @@ export function RestaurantInfoForm({ restaurant }: { restaurant: Restaurant }) {
             <select
               id="province"
               value={province}
-              onChange={(e) => setProvince(e.target.value)}
+              onChange={(e) => {
+                setProvince(e.target.value);
+                setCity("");
+              }}
               className="flex h-9 w-full rounded-lg border border-input bg-background px-3 text-sm text-foreground focus:border-ring focus:ring-2 focus:ring-ring/20 focus:outline-none"
             >
               <option value="">انتخاب استان...</option>
@@ -196,6 +202,24 @@ export function RestaurantInfoForm({ restaurant }: { restaurant: Restaurant }) {
                   {p}
                 </option>
               ))}
+            </select>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="city">شهر</Label>
+            <select
+              id="city"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              disabled={!province}
+              className="flex h-9 w-full rounded-lg border border-input bg-background px-3 text-sm text-foreground focus:border-ring focus:ring-2 focus:ring-ring/20 focus:outline-none disabled:opacity-50"
+            >
+              <option value="">انتخاب شهر...</option>
+              {province &&
+                CITIES_BY_PROVINCE[province]?.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
             </select>
           </div>
           <div className="space-y-2">

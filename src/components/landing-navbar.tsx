@@ -31,9 +31,6 @@ export function LandingNavbar({
           >
             منوها
           </a>
-          <a href="/dolopi" className="transition-colors hover:text-foreground">
-            نمونه منو
-          </a>
           <a
             href="#features"
             className="transition-colors hover:text-foreground"
@@ -161,13 +158,6 @@ export function LandingNavbar({
               onClick={() => setMobileOpen(false)}
             >
               منوها
-            </a>
-            <a
-              href="/dolopi"
-              className="rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-              onClick={() => setMobileOpen(false)}
-            >
-              مشاهده نمونه منو
             </a>
             <a
               href="#features"

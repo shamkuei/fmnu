@@ -12,6 +12,7 @@ import {
   Zap,
 } from "lucide-react";
 import { getMeAction } from "@/actions/auth";
+import { getLandingDataAction } from "@/actions/site";
 import { Button } from "@/components/ui/button";
 import { LandingNavbar } from "@/components/landing-navbar";
 
@@ -31,6 +32,7 @@ export const metadata: Metadata = {
 
 export default async function LandingPage() {
   const user = await getMeAction();
+  const landingData = await getLandingDataAction();
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -67,14 +69,6 @@ export default async function LandingPage() {
             variant="outline"
             size="lg"
             nativeButton={false}
-            render={<a href="/dolopi" />}
-          >
-            مشاهده نمونه منو
-          </Button>
-          <Button
-            variant="ghost"
-            size="lg"
-            nativeButton={false}
             render={<a href="#how-it-works" />}
           >
             بیشتر بدانید
@@ -87,33 +81,32 @@ export default async function LandingPage() {
             <div className="bg-primary/5 p-6">
               <div className="flex items-center gap-3">
                 <div className="flex size-12 items-center justify-center rounded-xl bg-primary text-primary-foreground text-lg font-bold">
-                  د
+                  ف
                 </div>
                 <div className="text-right">
-                  <div className="font-bold text-foreground">رستوران دلوپی</div>
+                  <div className="font-bold text-foreground">فستمنو</div>
                   <div className="text-xs text-muted-foreground">
-                    منوی آنلاین
+                    منوی دیجیتال رستوران
                   </div>
                 </div>
               </div>
             </div>
             <div className="space-y-3 p-4">
               {[
-                "همبرگر کلاسیک",
-                "پنیربرگر ویژه",
-                "سیب‌زمینی سرخ‌کرده",
-                "نوشابه",
-              ].map((item, i) => (
+                { name: "دسته‌بندی اول", sub: "۴ آیتم" },
+                { name: "دسته‌بندی دوم", sub: "۳ آیتم" },
+                { name: "دسته‌بندی سوم", sub: "۵ آیتم" },
+              ].map((item) => (
                 <div
-                  key={item}
+                  key={item.name}
                   className="flex items-center justify-between rounded-xl border border-border bg-background p-3"
                 >
                   <div>
                     <div className="text-sm font-medium text-foreground">
-                      {item}
+                      {item.name}
                     </div>
                     <div className="text-xs text-muted-foreground">
-                      {(185 + i * 35).toLocaleString("fa-IR")} تومان
+                      {item.sub}
                     </div>
                   </div>
                   <div className="size-10 rounded-lg bg-muted" />
@@ -126,67 +119,62 @@ export default async function LandingPage() {
       </section>
 
       {/* Social Proof */}
-      <section className="border-t border-border/50 py-12">
-        <div className="mx-auto max-w-5xl px-4">
-          <div className="grid grid-cols-3 gap-8 text-center">
-            <div>
-              <div className="text-3xl font-bold text-foreground sm:text-4xl">
-                +۵۰۰
+      {landingData.showSocialProof && landingData.restaurantCount > 0 && (
+        <section className="border-t border-border/50 py-12">
+          <div className="mx-auto max-w-5xl px-4">
+            <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-3">
+              <div>
+                <div className="text-3xl font-bold text-foreground sm:text-4xl">
+                  +{landingData.restaurantCount.toLocaleString("fa-IR")}
+                </div>
+                <div className="mt-1 text-sm text-muted-foreground">
+                  رستوران فعال
+                </div>
               </div>
-              <div className="mt-1 text-sm text-muted-foreground">
-                رستوران فعال
+              <div>
+                <div className="text-3xl font-bold text-foreground sm:text-4xl">
+                  رایگان
+                </div>
+                <div className="mt-1 text-sm text-muted-foreground">
+                  بدون هزینه و بدون محدودیت
+                </div>
               </div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-foreground sm:text-4xl">
-                +۱۰,۰۰۰
-              </div>
-              <div className="mt-1 text-sm text-muted-foreground">
-                بازدید روزانه
-              </div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-foreground sm:text-4xl">
-                ۹۸٪
-              </div>
-              <div className="mt-1 text-sm text-muted-foreground">
-                رضایت مشتری
+              <div>
+                <div className="text-3xl font-bold text-foreground sm:text-4xl">
+                  آنی
+                </div>
+                <div className="mt-1 text-sm text-muted-foreground">
+                  آپدیت لحظه‌ای منو
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Testimonials */}
-      <section className="bg-muted/30 py-16">
-        <div className="mx-auto max-w-5xl px-4">
-          <div className="mb-10 text-center">
-            <h2 className="mb-3 text-2xl font-bold text-foreground sm:text-3xl">
-              رستوران‌دارها چی می‌گن؟
-            </h2>
+      {landingData.showTestimonials && landingData.testimonials.length > 0 && (
+        <section className="bg-muted/30 py-16">
+          <div className="mx-auto max-w-5xl px-4">
+            <div className="mb-10 text-center">
+              <h2 className="mb-3 text-2xl font-bold text-foreground sm:text-3xl">
+                رستوران‌دارها چی می‌گن؟
+              </h2>
+            </div>
+            <div className="grid gap-6 sm:grid-cols-3">
+              {landingData.testimonials.map((t: any) => (
+                <TestimonialCard
+                  key={t.id}
+                  name={t.name}
+                  role={t.role}
+                  text={t.text}
+                  rating={t.rating}
+                />
+              ))}
+            </div>
           </div>
-          <div className="grid gap-6 sm:grid-cols-3">
-            <TestimonialCard
-              name="علی محمدی"
-              role="رستوران برگرلند"
-              text="از وقتی فستمنو رو شروع کردیم، مشتری‌ها خیلی راحت‌تر منو رو می‌بینن. دیگه نیازی به چاپ مجدد منو نیست."
-              rating={5}
-            />
-            <TestimonialCard
-              name="سارا احمدی"
-              role="کافه بیسترو"
-              text="واقعاً ساده و کاربردیه. منوی کافه رو تو ۱۰ دقیقه تنظیم کردم و QR کد رو همون روز روی میزها گذاشتیم."
-              rating={5}
-            />
-            <TestimonialCard
-              name="رضا کریمی"
-              role="فست‌فود دونر"
-              text="قیمت‌ها رو هر روز آپدیت می‌کنیم و فوراً روی منوی آنلاین اعمال میشه. پشتیبانیش هم عالیه."
-              rating={5}
-            />
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Features */}
       <section

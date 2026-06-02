@@ -116,6 +116,7 @@ export default async function MenuPage({
             address={restaurant.address}
             phone={restaurant.phone}
             province={restaurant.province}
+            city={(restaurant as any).city ?? null}
             socialMedia={socials}
           />
 

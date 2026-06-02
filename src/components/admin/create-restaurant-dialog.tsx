@@ -4,7 +4,7 @@ import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createRestaurantAction } from "@/actions/restaurants";
-import { IRAN_PROVINCES } from "@/lib/provinces";
+import { CITIES_BY_PROVINCE, IRAN_PROVINCES } from "@/lib/provinces";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -38,6 +38,7 @@ export function CreateRestaurantDialog() {
   const [brandText, setBrandText] = useState("");
   const [description, setDescription] = useState("");
   const [province, setProvince] = useState("");
+  const [city, setCity] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -52,6 +53,7 @@ export function CreateRestaurantDialog() {
         brandText: brandText.trim() || undefined,
         description: description.trim() || undefined,
         province: province || undefined,
+        city: city || undefined,
       });
       setOpen(false);
       setName("");
@@ -59,6 +61,7 @@ export function CreateRestaurantDialog() {
       setBrandText("");
       setDescription("");
       setProvince("");
+      setCity("");
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "خطا در ساخت رستوران");
@@ -141,21 +144,44 @@ export function CreateRestaurantDialog() {
               rows={3}
             />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="province">استان</Label>
-            <select
-              id="province"
-              value={province}
-              onChange={(e) => setProvince(e.target.value)}
-              className="flex h-9 w-full rounded-lg border border-input bg-background px-3 text-sm text-foreground focus:border-ring focus:ring-2 focus:ring-ring/20 focus:outline-none"
-            >
-              <option value="">انتخاب استان...</option>
-              {IRAN_PROVINCES.map((p) => (
-                <option key={p} value={p}>
-                  {p}
-                </option>
-              ))}
-            </select>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="province">استان</Label>
+              <select
+                id="province"
+                value={province}
+                onChange={(e) => {
+                  setProvince(e.target.value);
+                  setCity("");
+                }}
+                className="flex h-9 w-full rounded-lg border border-input bg-background px-3 text-sm text-foreground focus:border-ring focus:ring-2 focus:ring-ring/20 focus:outline-none"
+              >
+                <option value="">انتخاب استان...</option>
+                {IRAN_PROVINCES.map((p) => (
+                  <option key={p} value={p}>
+                    {p}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="city">شهر</Label>
+              <select
+                id="city"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                disabled={!province}
+                className="flex h-9 w-full rounded-lg border border-input bg-background px-3 text-sm text-foreground focus:border-ring focus:ring-2 focus:ring-ring/20 focus:outline-none disabled:opacity-50"
+              >
+                <option value="">انتخاب شهر...</option>
+                {province &&
+                  CITIES_BY_PROVINCE[province]?.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+              </select>
+            </div>
           </div>
           <DialogFooter showCloseButton>
             <Button

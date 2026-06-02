@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ExternalLink, Store } from "lucide-react";
+import { ExternalLink, MessageSquareText, Store } from "lucide-react";
 import { getMeAction } from "@/actions/auth";
 import { getMyRestaurantsAction } from "@/actions/restaurants";
 import { CreateRestaurantDialog } from "@/components/admin/create-restaurant-dialog";
@@ -46,6 +46,13 @@ export default async function AdminDashboard() {
           >
             <ExternalLink className="size-3.5" />
             fmnu.ir
+          </Link>
+          <Link
+            href="/admin/testimonials"
+            className="inline-flex h-8 items-center gap-1 rounded-lg border px-2.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+          >
+            <MessageSquareText className="size-3.5" />
+            نظرات و تنظیمات
           </Link>
           <CreateRestaurantDialog />
           {user && (
