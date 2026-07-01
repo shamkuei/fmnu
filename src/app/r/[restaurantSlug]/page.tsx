@@ -6,6 +6,7 @@ import { trackPageView } from "@/modules/restaurants/restaurants.service";
 import { ContactInfo } from "@/components/menu/contact-info";
 import { MenuContent } from "@/components/menu/menu-content";
 import { MenuHeader } from "@/components/menu/menu-header";
+import { getRestaurantUrl } from "@/lib/urls";
 
 const getCachedRestaurant = cache(getRestaurantBySlug);
 
@@ -25,10 +26,7 @@ export async function generateMetadata({
   const description =
     restaurant.description ||
     `مشاهده منوی آنلاین ${restaurant.name}. قیمت‌ها، دسته‌بندی‌ها و اطلاعات تماس`;
-  const domain = process.env.NEXT_PUBLIC_DOMAIN || "fmnu.ir";
-  const protocol =
-    process.env.NODE_ENV === "production" ? "https" : "http";
-  const url = `${protocol}://${restaurantSlug}.${domain}`;
+  const url = getRestaurantUrl(restaurantSlug);
 
   return {
     title,

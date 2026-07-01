@@ -19,8 +19,8 @@ export function LandingNavbar({
   return (
     <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-lg">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
-        <a href="/" className="text-xl font-bold text-foreground">
-          فستمنو
+        <a href="/" className="flex items-center gap-2">
+          <img src="/fmnu_logo.png" alt="فستمنو" className="h-8 w-auto" />
         </a>
 
         {/* Desktop nav */}

@@ -93,9 +93,10 @@ export default async function LandingPage() {
             </div>
             <div className="space-y-3 p-4">
               {[
-                { name: "دسته‌بندی اول", sub: "۴ آیتم" },
-                { name: "دسته‌بندی دوم", sub: "۳ آیتم" },
-                { name: "دسته‌بندی سوم", sub: "۵ آیتم" },
+                { name: "همبرگر کلاسیک", price: "۱۸۵,۰۰۰" },
+                { name: "پیتزا مارگاریتا", price: "۲۲۰,۰۰۰" },
+                { name: "سیب‌زمینی سرخ‌کرده", price: "۶۵,۰۰۰" },
+                { name: "نوشابه قوطی", price: "۲۵,۰۰۰" },
               ].map((item) => (
                 <div
                   key={item.name}
@@ -106,7 +107,7 @@ export default async function LandingPage() {
                       {item.name}
                     </div>
                     <div className="text-xs text-muted-foreground">
-                      {item.sub}
+                      {item.price} تومان
                     </div>
                   </div>
                   <div className="size-10 rounded-lg bg-muted" />
