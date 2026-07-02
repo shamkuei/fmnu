@@ -1,8 +1,6 @@
 services:
   app:
     build: .
-    ports:
-      - "3000:3000"
     volumes:
       - db-data:/app/data
       - uploads:/app/public/uploads
@@ -14,6 +12,23 @@ services:
       - SMS_FROM=${SMS_FROM}
     restart: unless-stopped
 
+  proxy:
+    image: jonasal/nginx-certbot:latest
+    depends_on: [app]
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - CERTBOT_EMAIL=${CERTBOT_EMAIL}
+      # Staging issues untrusted test certs but has very high rate limits.
+      # Verify issuance works, then set to 0 and wipe the nginx-certs volume.
+      - STAGING=1
+    volumes:
+      - ./nginx/user_conf.d:/etc/nginx/user_conf.d:ro
+      - nginx-certs:/etc/letsencrypt
+    restart: unless-stopped
+
 volumes:
   db-data:
   uploads:
+  nginx-certs:
