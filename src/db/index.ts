@@ -1,4 +1,5 @@
 import Database from "better-sqlite3";
+import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 import { drizzle } from "drizzle-orm/better-sqlite3";
 import { relations } from "./relations";
 import * as schema from "./schema";
@@ -9,3 +10,7 @@ export const db = drizzle({
   schema,
   relations,
 });
+
+migrate(db, { migrationsFolder: "./drizzle" }).then((e) =>
+  console.log("migration completed"),
+);
