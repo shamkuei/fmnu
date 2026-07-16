@@ -1,0 +1,30 @@
+name: Deploy
+
+# SSH into the VPS, pull latest main, and rebuild the app container.
+# The new container's docker-entrypoint.sh runs pending Drizzle migrations
+# before `node server.js`, and runtime secrets stay in the server's .env —
+# so this workflow needs no access to either.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          # Adjust ~/fmnu to wherever the repo is cloned on the server.
+          script: |
+            set -e
+            cd ~/fmnu
+            git pull --ff-only
+            docker compose up -d --build
+            docker image prune -f
