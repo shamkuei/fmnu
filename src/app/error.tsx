@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
 import { AlertTriangle, Home, RotateCw } from "lucide-react";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
 export default function RootError({
@@ -31,7 +31,14 @@ export default function RootError({
           <RotateCw className="size-4" />
           تلاش مجدد
         </Button>
-        <Button variant="outline" nativeButton={false} render={<a href="/" />}>
+        <Button
+          variant="outline"
+          nativeButton={false}
+          render={
+            // biome-ignore lint/a11y/useAnchorContent: anchor content is provided by Button's children via the render prop
+            <a href="/" />
+          }
+        >
           <Home className="size-4" />
           صفحه اصلی
         </Button>

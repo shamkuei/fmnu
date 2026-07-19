@@ -1,8 +1,5 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   ExternalLink,
   MapPin,
@@ -11,17 +8,20 @@ import {
   Store,
   Trash2,
 } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 import { deleteRestaurantAction } from "@/actions/restaurants";
 import { DeleteConfirmDialog } from "@/components/admin/delete-confirm-dialog";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { getRestaurantUrl } from "@/lib/urls";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { getRestaurantUrl } from "@/lib/urls";
 
 type Restaurant = {
   id: string;
@@ -49,11 +49,7 @@ function relativeTime(date: Date): string {
   return date.toLocaleDateString("fa-IR");
 }
 
-function RestaurantCard({
-  restaurant,
-}: {
-  restaurant: Restaurant;
-}) {
+function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
   const router = useRouter();
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
@@ -178,11 +174,7 @@ function RestaurantCard({
   );
 }
 
-export function RestaurantList({
-  restaurants,
-}: {
-  restaurants: Restaurant[];
-}) {
+export function RestaurantList({ restaurants }: { restaurants: Restaurant[] }) {
   const [query, setQuery] = useState("");
 
   const filtered = useMemo(() => {
@@ -190,8 +182,7 @@ export function RestaurantList({
     const q = query.trim().toLowerCase();
     return restaurants.filter(
       (r) =>
-        r.name.toLowerCase().includes(q) ||
-        r.slug.toLowerCase().includes(q),
+        r.name.toLowerCase().includes(q) || r.slug.toLowerCase().includes(q),
     );
   }, [restaurants, query]);
 

@@ -137,9 +137,7 @@ export const testimonials = sqliteTable("testimonial", {
   role: text().notNull(),
   text: text().notNull(),
   rating: integer().notNull().default(5),
-  isVisible: integer("is_visible", { mode: "boolean" })
-    .default(true)
-    .notNull(),
+  isVisible: integer("is_visible", { mode: "boolean" }).default(true).notNull(),
   sortOrder: integer("sort_order").notNull().default(0),
   createdAt: integer("created_at", { mode: "timestamp" })
     .default(sql`(unixepoch())`)

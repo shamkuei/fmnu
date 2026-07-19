@@ -30,8 +30,8 @@ export default function CompleteProfilePage() {
       });
       router.push("/admin");
       router.refresh();
-    } catch (err: any) {
-      setError(err?.message ?? "خطا در ذخیره اطلاعات");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "خطا در ذخیره اطلاعات");
     } finally {
       setLoading(false);
     }
@@ -41,9 +41,7 @@ export default function CompleteProfilePage() {
     <main className="flex min-h-screen items-center justify-center px-4">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle className="text-center text-xl">
-            تکمیل پروفایل
-          </CardTitle>
+          <CardTitle className="text-center text-xl">تکمیل پروفایل</CardTitle>
         </CardHeader>
         <CardContent>
           {error && (

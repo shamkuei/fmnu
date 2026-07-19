@@ -17,7 +17,10 @@ export function SiteSettingsToggles({
   const [testimonials, setTestimonials] = useState(showTestimonials);
   const [loading, setLoading] = useState(false);
 
-  async function toggle(key: "showSocialProof" | "showTestimonials", value: boolean) {
+  async function toggle(
+    key: "showSocialProof" | "showTestimonials",
+    value: boolean,
+  ) {
     setLoading(true);
     try {
       await updateSiteSettingsAction({ [key]: value });

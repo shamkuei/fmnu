@@ -12,14 +12,23 @@ export default function RootNotFound() {
         ممکنه این صفحه حذف شده باشه یا آدرس اشتباه وارد شده باشه.
       </p>
       <div className="flex gap-3">
-        <Button nativeButton={false} render={<a href="/" />}>
+        <Button
+          nativeButton={false}
+          render={
+            // biome-ignore lint/a11y/useAnchorContent: anchor content is provided by Button's children via the render prop
+            <a href="/" />
+          }
+        >
           <Home className="size-4" />
           صفحه اصلی
         </Button>
         <Button
           variant="outline"
           nativeButton={false}
-          render={<a href="/restaurants" />}
+          render={
+            // biome-ignore lint/a11y/useAnchorContent: anchor content is provided by Button's children via the render prop
+            <a href="/restaurants" />
+          }
         >
           <Search className="size-4" />
           جستجوی رستوران‌ها

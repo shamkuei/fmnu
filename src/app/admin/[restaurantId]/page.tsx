@@ -1,14 +1,19 @@
+import {
+  BarChart3,
+  Eye,
+  LayoutGrid,
+  QrCode,
+  UtensilsCrossed,
+} from "lucide-react";
 import { notFound } from "next/navigation";
 import {
   getRestaurantAction,
   getRestaurantStatsAction,
 } from "@/actions/restaurants";
+import { EmptyStateActions } from "@/components/admin/empty-state-actions";
 import { QrCodeCard } from "@/components/admin/qr-code-card";
 import { QuickActions } from "@/components/admin/quick-actions";
-import { EmptyStateActions } from "@/components/admin/empty-state-actions";
 import { Card, CardContent } from "@/components/ui/card";
-import { Eye, LayoutGrid, QrCode, UtensilsCrossed, BarChart3 } from "lucide-react";
-import Link from "next/link";
 
 export default async function OverviewPage({
   params,
@@ -17,7 +22,7 @@ export default async function OverviewPage({
 }) {
   const { restaurantId } = await params;
 
-  let restaurant;
+  let restaurant: Awaited<ReturnType<typeof getRestaurantAction>>;
   try {
     restaurant = await getRestaurantAction(restaurantId);
   } catch {
@@ -26,7 +31,13 @@ export default async function OverviewPage({
 
   if (!restaurant) notFound();
 
-  let stats = { categories: 0, products: 0, available: 0, totalViews: 0, todayViews: 0 };
+  let stats = {
+    categories: 0,
+    products: 0,
+    available: 0,
+    totalViews: 0,
+    todayViews: 0,
+  };
   try {
     stats = await getRestaurantStatsAction(restaurantId);
   } catch {
@@ -108,7 +119,8 @@ export default async function OverviewPage({
                 هنوز منویی ایجاد نشده
               </p>
               <p className="mt-1 text-sm text-muted-foreground">
-                برای شروع، اولین دسته‌بندی رو اضافه کن (مثل: پیتزا، سالاد، نوشیدنی)
+                برای شروع، اولین دسته‌بندی رو اضافه کن (مثل: پیتزا، سالاد،
+                نوشیدنی)
               </p>
             </div>
             <EmptyStateActions restaurantId={restaurant.id} />
@@ -129,8 +141,7 @@ export default async function OverviewPage({
 
       {/* Last Updated */}
       <p className="text-xs text-muted-foreground">
-        آخرین تغییر:{" "}
-        {restaurant.updatedAt?.toLocaleDateString("fa-IR")} -{" "}
+        آخرین تغییر: {restaurant.updatedAt?.toLocaleDateString("fa-IR")} -{" "}
         {restaurant.updatedAt?.toLocaleTimeString("fa-IR", {
           hour: "2-digit",
           minute: "2-digit",

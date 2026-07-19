@@ -4,7 +4,6 @@ import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createRestaurantAction } from "@/actions/restaurants";
-import { CITIES_BY_PROVINCE, IRAN_PROVINCES } from "@/lib/provinces";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { CITIES_BY_PROVINCE, IRAN_PROVINCES } from "@/lib/provinces";
 
 function toSlug(text: string) {
   return text
@@ -111,9 +111,7 @@ export function CreateRestaurantDialog() {
           <div className="space-y-2">
             <Label htmlFor="slug">آدرس منو</Label>
             <div className="flex items-center gap-0" dir="ltr">
-              <span
-                className="shrink-0 rounded-s-lg border border-e-0 border-input bg-muted px-2 py-1.5 text-sm text-muted-foreground"
-              >
+              <span className="shrink-0 rounded-s-lg border border-e-0 border-input bg-muted px-2 py-1.5 text-sm text-muted-foreground">
                 /r/
               </span>
               <Input

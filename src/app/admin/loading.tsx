@@ -1,5 +1,5 @@
-import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AdminLoading() {
   return (
@@ -17,6 +17,7 @@ export default function AdminLoading() {
 
       <div className="grid gap-4 sm:grid-cols-2">
         {Array.from({ length: 4 }).map((_, i) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: static decorative skeleton list
           <Card key={i}>
             <CardHeader>
               <div className="flex items-center gap-3">

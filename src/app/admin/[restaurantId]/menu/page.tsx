@@ -9,7 +9,7 @@ export default async function MenuManagerPage({
 }) {
   const { restaurantId } = await params;
 
-  let restaurant;
+  let restaurant: Awaited<ReturnType<typeof getRestaurantAction>>;
   try {
     restaurant = await getRestaurantAction(restaurantId);
   } catch {

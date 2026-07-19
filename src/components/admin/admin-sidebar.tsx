@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import {
   Eye,
   LayoutGrid,
@@ -10,6 +8,8 @@ import {
   Settings,
   UtensilsCrossed,
 } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { getRestaurantUrl } from "@/lib/urls";
 
 const navItems = [
@@ -63,7 +63,11 @@ export function AdminSidebar({
           </div>
           <nav className="space-y-1">
             {navItems.map(({ href, label, icon: Icon }) => (
-              <Link key={href} href={basePath + href} className={linkClasses(href)}>
+              <Link
+                key={href}
+                href={basePath + href}
+                className={linkClasses(href)}
+              >
                 <Icon className="size-4" />
                 {label}
               </Link>

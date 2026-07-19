@@ -1,8 +1,8 @@
 "use client";
 
+import { ArrowUp, Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { ArrowUp, Eye, EyeOff } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -58,6 +58,7 @@ export function MenuContent({ categories }: { categories: Category[] }) {
           <div className="flex gap-2 overflow-x-auto">
             {categories.map((cat) => (
               <button
+                type="button"
                 key={cat.id}
                 onClick={() => scrollToCat(cat.id)}
                 className="whitespace-nowrap rounded-full bg-primary/10 px-3 py-1.5 text-sm font-medium text-primary transition-colors hover:bg-primary/20"
@@ -73,6 +74,7 @@ export function MenuContent({ categories }: { categories: Category[] }) {
         {/* Unavailable toggle */}
         {hasUnavailable && (
           <button
+            type="button"
             onClick={() => setShowUnavailable(!showUnavailable)}
             className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           >
@@ -81,9 +83,7 @@ export function MenuContent({ categories }: { categories: Category[] }) {
             ) : (
               <EyeOff className="size-4" />
             )}
-            {showUnavailable
-              ? "مخفی کردن ناموجودها"
-              : "نمایش موارد ناموجود"}
+            {showUnavailable ? "مخفی کردن ناموجودها" : "نمایش موارد ناموجود"}
           </button>
         )}
 
@@ -117,6 +117,7 @@ export function MenuContent({ categories }: { categories: Category[] }) {
       {/* Scroll to top */}
       {showScrollTop && (
         <button
+          type="button"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           className="fixed bottom-6 left-6 z-20 flex size-11 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-lg transition-colors hover:bg-muted"
         >

@@ -8,10 +8,10 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import {
   matchPreset,
+  type ThemeColors,
   themeKeys,
   themeLabels,
   themePresets,
-  type ThemeColors,
 } from "@/lib/theme-presets";
 
 type ThemeEditorProps = {
@@ -274,8 +274,8 @@ export function ThemeEditor({ restaurantId, theme }: ThemeEditorProps) {
                       opacity: 0.4,
                     }}
                   />
+                </div>
               </div>
-            </div>
             </div>
           </div>
         </div>

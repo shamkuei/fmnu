@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { QrCode, Download } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Download, QrCode } from "lucide-react";
+import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getRestaurantUrl } from "@/lib/urls";
 
 export function QrCodeCard({ slug }: { slug: string }) {

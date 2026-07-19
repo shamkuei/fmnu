@@ -12,9 +12,7 @@ export function LandingNavbar({
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
-  const displayName = user
-    ? `${user.firstName} ${user.lastName}`.trim()
-    : null;
+  const displayName = user ? `${user.firstName} ${user.lastName}`.trim() : null;
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-lg">
@@ -65,18 +63,17 @@ export function LandingNavbar({
               <Button
                 size="sm"
                 nativeButton={false}
-                render={<a href="/admin" />}
+                render={
+                  // biome-ignore lint/a11y/useAnchorContent: anchor content is provided by Button's children via the render prop
+                  <a href="/admin" />
+                }
               >
                 <LayoutDashboard className="size-3.5" />
                 پنل مدیریت
               </Button>
               <form action="/auth/logout" method="POST">
                 <input type="hidden" name="_action" value="logout" />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  type="submit"
-                >
+                <Button variant="ghost" size="sm" type="submit">
                   <LogOut className="size-3.5" />
                   خروج
                 </Button>
@@ -87,7 +84,10 @@ export function LandingNavbar({
               <Button
                 size="sm"
                 nativeButton={false}
-                render={<a href="/auth/login?action=signup" />}
+                render={
+                  // biome-ignore lint/a11y/useAnchorContent: anchor content is provided by Button's children via the render prop
+                  <a href="/auth/login?action=signup" />
+                }
               >
                 شروع رایگان
               </Button>
@@ -95,7 +95,10 @@ export function LandingNavbar({
                 variant="ghost"
                 size="sm"
                 nativeButton={false}
-                render={<a href="/auth/login" />}
+                render={
+                  // biome-ignore lint/a11y/useAnchorContent: anchor content is provided by Button's children via the render prop
+                  <a href="/auth/login" />
+                }
               >
                 ورود
               </Button>
@@ -141,7 +144,6 @@ export function LandingNavbar({
               type="search"
               name="q"
               placeholder="جستجوی رستوران..."
-              autoFocus
               className="h-10 w-full rounded-xl border border-input bg-background pr-10 pl-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:ring-2 focus:ring-ring/20 focus:outline-none"
             />
           </div>
@@ -159,6 +161,7 @@ export function LandingNavbar({
             >
               منوها
             </a>
+            {/* biome-ignore lint/a11y/useValidAnchor: href navigates to the section; onClick only closes the mobile menu */}
             <a
               href="#features"
               className="rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
@@ -166,6 +169,7 @@ export function LandingNavbar({
             >
               ویژگی‌ها
             </a>
+            {/* biome-ignore lint/a11y/useValidAnchor: href navigates to the section; onClick only closes the mobile menu */}
             <a
               href="#faq"
               className="rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
@@ -201,7 +205,10 @@ export function LandingNavbar({
                   size="sm"
                   className="w-full"
                   nativeButton={false}
-                  render={<a href="/auth/login?action=signup" />}
+                  render={
+                    // biome-ignore lint/a11y/useAnchorContent: anchor content is provided by Button's children via the render prop
+                    <a href="/auth/login?action=signup" />
+                  }
                   onClick={() => setMobileOpen(false)}
                 >
                   شروع رایگان
@@ -211,7 +218,10 @@ export function LandingNavbar({
                   size="sm"
                   className="w-full"
                   nativeButton={false}
-                  render={<a href="/auth/login" />}
+                  render={
+                    // biome-ignore lint/a11y/useAnchorContent: anchor content is provided by Button's children via the render prop
+                    <a href="/auth/login" />
+                  }
                   onClick={() => setMobileOpen(false)}
                 >
                   ورود به پنل

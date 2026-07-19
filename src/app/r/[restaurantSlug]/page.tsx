@@ -1,12 +1,14 @@
-import { cache } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getRestaurantBySlug } from "@/modules/restaurants/restaurants.service";
-import { trackPageView } from "@/modules/restaurants/restaurants.service";
+import { cache } from "react";
 import { ContactInfo } from "@/components/menu/contact-info";
 import { MenuContent } from "@/components/menu/menu-content";
 import { MenuHeader } from "@/components/menu/menu-header";
 import { getRestaurantUrl } from "@/lib/urls";
+import {
+  getRestaurantBySlug,
+  trackPageView,
+} from "@/modules/restaurants/restaurants.service";
 
 const getCachedRestaurant = cache(getRestaurantBySlug);
 
@@ -89,7 +91,10 @@ export default async function MenuPage({
   const socials = restaurant.socialMedia as Record<string, string> | null;
 
   return (
-    <div style={themeVars as React.CSSProperties} className="min-h-screen bg-background text-foreground">
+    <div
+      style={themeVars as React.CSSProperties}
+      className="min-h-screen bg-background text-foreground"
+    >
       <main className="mx-auto max-w-3xl">
         {!restaurant.isAvailable && (
           <div className="mx-4 mt-8 rounded-lg bg-destructive/10 p-3 text-center text-sm text-destructive">
@@ -114,7 +119,7 @@ export default async function MenuPage({
             address={restaurant.address}
             phone={restaurant.phone}
             province={restaurant.province}
-            city={(restaurant as any).city ?? null}
+            city={restaurant.city ?? null}
             socialMedia={socials}
           />
 

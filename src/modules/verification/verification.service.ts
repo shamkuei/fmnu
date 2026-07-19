@@ -138,6 +138,7 @@ export async function resendCode(verificationId: string) {
 
   const record = rows[0];
   if (!record) return null;
+  if (!record.phone) return null;
   if (record.usedAt) return null;
   if (record.nextResend > new Date()) return null;
   if (record.resendCount >= MAX_RESEND_COUNT) {
@@ -156,7 +157,7 @@ export async function resendCode(verificationId: string) {
     })
     .where(eq(verifications.id, verificationId));
 
-  await sendVerificationSMS(record.phone!, newCode);
+  await sendVerificationSMS(record.phone, newCode);
 
   return { nextResend: getNextResendTime(record.resendCount + 1) };
 }

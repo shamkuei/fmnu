@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getRestaurantAction } from "@/actions/restaurants";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
@@ -13,7 +13,7 @@ export default async function RestaurantLayout({
 }) {
   const { restaurantId } = await params;
 
-  let restaurant;
+  let restaurant: Awaited<ReturnType<typeof getRestaurantAction>>;
   try {
     restaurant = await getRestaurantAction(restaurantId);
   } catch {

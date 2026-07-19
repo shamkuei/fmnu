@@ -1,12 +1,15 @@
-import type { Metadata } from "next";
-import { getAllTestimonialsAction, getSiteSettingsAction } from "@/actions/site";
-import { getMeAction } from "@/actions/auth";
-import { redirect } from "next/navigation";
-import { TestimonialsManager } from "@/components/admin/testimonials-manager";
-import { SiteSettingsToggles } from "@/components/admin/site-settings-toggles";
-import { Separator } from "@/components/ui/separator";
-import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { getMeAction } from "@/actions/auth";
+import {
+  getAllTestimonialsAction,
+  getSiteSettingsAction,
+} from "@/actions/site";
+import { SiteSettingsToggles } from "@/components/admin/site-settings-toggles";
+import { TestimonialsManager } from "@/components/admin/testimonials-manager";
+import { Separator } from "@/components/ui/separator";
 
 export const metadata: Metadata = {
   title: "مدیریت نظرات و تنظیمات سایت | فستمنو",

@@ -1,8 +1,8 @@
-import type { Metadata } from "next";
 import { Search } from "lucide-react";
-import { searchPublicRestaurants } from "@/modules/restaurants/restaurants.service";
+import type { Metadata } from "next";
 import { ProvinceFilter } from "@/components/province-filter";
 import { getRestaurantUrl } from "@/lib/urls";
+import { searchPublicRestaurants } from "@/modules/restaurants/restaurants.service";
 
 export const metadata: Metadata = {
   title: "جستجوی رستوران‌ها | فستمنو",
@@ -101,9 +101,9 @@ export default async function RestaurantsPage({
                     {r.description}
                   </p>
                 )}
-                {(r.province || (r as any).city || r.address) && (
+                {(r.province || r.city || r.address) && (
                   <p className="text-xs text-muted-foreground">
-                    {[r.province, (r as any).city, r.address].filter(Boolean).join("، ")}
+                    {[r.province, r.city, r.address].filter(Boolean).join("، ")}
                   </p>
                 )}
               </a>

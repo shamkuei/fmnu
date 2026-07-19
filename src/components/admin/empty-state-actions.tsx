@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { CategoryFormDialog } from "@/components/admin/category-form-dialog";
+import { Button } from "@/components/ui/button";
 
 export function EmptyStateActions({ restaurantId }: { restaurantId: string }) {
   const router = useRouter();

@@ -1,4 +1,4 @@
-import { and, count, eq, gte, like, or, sql } from "drizzle-orm";
+import { and, count, eq, gte, sql } from "drizzle-orm";
 import { db } from "@/db/index";
 import {
   categories,
@@ -18,6 +18,7 @@ export function searchPublicRestaurants(query?: string, province?: string) {
     logoUrl: restaurants.logoUrl,
     address: restaurants.address,
     province: restaurants.province,
+    city: restaurants.city,
   };
 
   const conditions = [eq(restaurants.isAvailable, true)];

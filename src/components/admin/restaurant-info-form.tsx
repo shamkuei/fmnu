@@ -4,7 +4,6 @@ import { Loader2, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { updateRestaurantAction } from "@/actions/restaurants";
-import { CITIES_BY_PROVINCE, IRAN_PROVINCES } from "@/lib/provinces";
 import { ImageUploader } from "@/components/admin/image-uploader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { CITIES_BY_PROVINCE, IRAN_PROVINCES } from "@/lib/provinces";
 
 type Restaurant = {
   id: string;
@@ -156,11 +156,7 @@ export function RestaurantInfoForm({ restaurant }: { restaurant: Restaurant }) {
       <section className="space-y-4">
         <h3 className="font-semibold text-foreground">تصاویر</h3>
         <div className="flex gap-6">
-          <ImageUploader
-            label="لوگو"
-            value={logoUrl}
-            onChange={setLogoUrl}
-          />
+          <ImageUploader label="لوگو" value={logoUrl} onChange={setLogoUrl} />
           <div className="flex-1">
             <ImageUploader
               label="تصویر اصلی"

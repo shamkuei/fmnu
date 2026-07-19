@@ -1,6 +1,6 @@
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getMeAction } from "@/actions/auth";
-import { headers } from "next/headers";
 
 export default async function AdminLayout({
   children,

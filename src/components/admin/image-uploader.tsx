@@ -1,8 +1,8 @@
 "use client";
 
+import { ImagePlus, Loader2, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { uploadFile } from "@/actions/upload";
-import { ImagePlus, Loader2, X } from "lucide-react";
 
 export function ImageUploader({
   value,

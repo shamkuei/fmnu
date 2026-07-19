@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import {
   ArrowLeft,
   ChevronDown,
@@ -11,10 +10,11 @@ import {
   Users,
   Zap,
 } from "lucide-react";
+import type { Metadata } from "next";
 import { getMeAction } from "@/actions/auth";
 import { getLandingDataAction } from "@/actions/site";
-import { Button } from "@/components/ui/button";
 import { LandingNavbar } from "@/components/landing-navbar";
+import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
   title: "فستمنو — منوی دیجیتال رایگان رستوران | ساخت منوی آنلاین با QR کد",
@@ -38,9 +38,7 @@ export default async function LandingPage() {
     <div className="min-h-screen flex flex-col">
       <LandingNavbar
         user={
-          user
-            ? { firstName: user.firstName, lastName: user.lastName }
-            : null
+          user ? { firstName: user.firstName, lastName: user.lastName } : null
         }
       />
 
@@ -61,7 +59,14 @@ export default async function LandingPage() {
           مشتری‌ها بذار و هر لحظه آپدیت کن.
         </p>
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Button size="lg" nativeButton={false} render={<a href="/auth/login?action=signup" />}>
+          <Button
+            size="lg"
+            nativeButton={false}
+            render={
+              // biome-ignore lint/a11y/useAnchorContent: anchor content is provided by Button's children via the render prop
+              <a href="/auth/login?action=signup" />
+            }
+          >
             شروع رایگان
             <ArrowLeft className="size-4" />
           </Button>
@@ -69,7 +74,10 @@ export default async function LandingPage() {
             variant="outline"
             size="lg"
             nativeButton={false}
-            render={<a href="#how-it-works" />}
+            render={
+              // biome-ignore lint/a11y/useAnchorContent: anchor content is provided by Button's children via the render prop
+              <a href="#how-it-works" />
+            }
           >
             بیشتر بدانید
           </Button>
@@ -163,7 +171,7 @@ export default async function LandingPage() {
               </h2>
             </div>
             <div className="grid gap-6 sm:grid-cols-3">
-              {landingData.testimonials.map((t: any) => (
+              {landingData.testimonials.map((t) => (
                 <TestimonialCard
                   key={t.id}
                   name={t.name}
@@ -307,7 +315,10 @@ export default async function LandingPage() {
             size="lg"
             nativeButton={false}
             className="border-primary-foreground/20 bg-primary-foreground/10 text-primary-foreground hover:bg-primary-foreground/20 hover:text-primary-foreground"
-            render={<a href="/auth/login?action=signup" />}
+            render={
+              // biome-ignore lint/a11y/useAnchorContent: anchor content is provided by Button's children via the render prop
+              <a href="/auth/login?action=signup" />
+            }
           >
             ساخت منوی رایگان
             <ArrowLeft className="size-4" />
@@ -396,6 +407,7 @@ function TestimonialCard({
     <div className="rounded-xl border border-border bg-card p-6">
       <div className="mb-3 flex gap-0.5">
         {Array.from({ length: rating }).map((_, i) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: index is the star position in a fixed-length decorative list
           <Star key={i} className="size-4 fill-amber-400 text-amber-400" />
         ))}
       </div>

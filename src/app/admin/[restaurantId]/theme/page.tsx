@@ -10,7 +10,7 @@ export default async function ThemePage({
 }) {
   const { restaurantId } = await params;
 
-  let restaurant;
+  let restaurant: Awaited<ReturnType<typeof getRestaurantAction>>;
   try {
     restaurant = await getRestaurantAction(restaurantId);
   } catch {

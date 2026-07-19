@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { ExternalLink, MessageSquareText, Store } from "lucide-react";
+import Link from "next/link";
 import { getMeAction } from "@/actions/auth";
 import { getMyRestaurantsAction } from "@/actions/restaurants";
 import { CreateRestaurantDialog } from "@/components/admin/create-restaurant-dialog";
@@ -25,9 +25,7 @@ export default async function AdminDashboard() {
     };
   });
 
-  const displayName = user
-    ? `${user.firstName} ${user.lastName}`.trim()
-    : "";
+  const displayName = user ? `${user.firstName} ${user.lastName}`.trim() : "";
 
   return (
     <main className="mx-auto max-w-4xl px-4 py-8">
@@ -66,9 +64,7 @@ export default async function AdminDashboard() {
       </div>
 
       <div className="mb-6">
-        <h2 className="text-lg font-semibold text-foreground">
-          رستوران‌های من
-        </h2>
+        <h2 className="text-lg font-semibold text-foreground">رستوران‌های من</h2>
         <Separator className="my-4" />
 
         {restaurants.length === 0 ? (

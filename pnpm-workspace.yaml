@@ -1,3 +1,8 @@
+# `packages: []` is required even though this is a single-package repo.
+# Without it, pnpm treats this file as a workspace declaration and errors
+# with "packages field missing or empty" on `pnpm install` and `pnpm store path`
+# (the latter is run by actions/setup-node's `cache: pnpm`, which breaks CI).
+packages: []
 allowBuilds:
   argon2: true
   better-sqlite3: true

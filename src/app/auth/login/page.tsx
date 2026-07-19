@@ -37,8 +37,8 @@ export default function LoginPage() {
     try {
       await requestOtpAction(phone);
       setStep("code");
-    } catch (err: any) {
-      setError(err?.message ?? "ارسال کد ناموفق بود");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "ارسال کد ناموفق بود");
     } finally {
       setLoading(false);
     }
@@ -48,7 +48,7 @@ export default function LoginPage() {
     if (value.length === 6) {
       try {
         const result = await checkCodeAction(phone, value);
-        setCodeValid((result as any).valid);
+        setCodeValid(result.valid);
       } catch {
         setCodeValid(false);
       }
@@ -67,8 +67,8 @@ export default function LoginPage() {
       await otpLoginAction(phone, code);
       const params = new URLSearchParams(window.location.search);
       router.push(params.get("callbackUrl") || "/admin");
-    } catch (err: any) {
-      setError(err?.message ?? "ورود ناموفق بود");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "ورود ناموفق بود");
     } finally {
       setLoading(false);
     }

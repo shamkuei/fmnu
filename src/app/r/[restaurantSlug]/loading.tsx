@@ -33,6 +33,7 @@ export default function MenuLoading() {
           {/* Category tabs */}
           <div className="flex gap-2">
             {Array.from({ length: 4 }).map((_, i) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: static decorative skeleton list
               <Skeleton key={i} className="h-8 w-20 rounded-full" />
             ))}
           </div>
@@ -41,6 +42,7 @@ export default function MenuLoading() {
           <div className="grid gap-3 sm:grid-cols-2">
             {Array.from({ length: 4 }).map((_, i) => (
               <div
+                // biome-ignore lint/suspicious/noArrayIndexKey: static decorative skeleton list
                 key={i}
                 className="flex items-start gap-3 rounded-xl border border-border bg-card p-3"
               >

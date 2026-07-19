@@ -1,5 +1,5 @@
-import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function RestaurantLoading() {
   return (
@@ -20,6 +20,7 @@ export default function RestaurantLoading() {
             </div>
             <div className="space-y-1">
               {Array.from({ length: 5 }).map((_, i) => (
+                // biome-ignore lint/suspicious/noArrayIndexKey: static decorative skeleton list
                 <Skeleton key={i} className="h-8 w-full rounded-lg" />
               ))}
             </div>
@@ -30,6 +31,7 @@ export default function RestaurantLoading() {
         <div className="min-w-0 flex-1 space-y-6">
           <div className="grid gap-4 grid-cols-2 sm:grid-cols-4">
             {Array.from({ length: 4 }).map((_, i) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: static decorative skeleton list
               <Card key={i}>
                 <CardContent className="flex flex-col items-center gap-2 pt-6">
                   <Skeleton className="size-10 rounded-lg" />

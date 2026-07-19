@@ -39,7 +39,7 @@ export function TestimonialsManager({
   testimonials: Testimonial[];
 }) {
   const router = useRouter();
-  const [list, setList] = useState(testimonials);
+  const [list, _setList] = useState(testimonials);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Testimonial | null>(null);
   const [loading, setLoading] = useState(false);
@@ -166,6 +166,7 @@ export function TestimonialsManager({
                 <div className="flex gap-1">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <button
+                      // biome-ignore lint/suspicious/noArrayIndexKey: index identifies the star position being rated
                       key={i}
                       type="button"
                       onClick={() => setRating(i + 1)}
@@ -226,6 +227,7 @@ export function TestimonialsManager({
                   <div className="mt-1 flex gap-0.5">
                     {Array.from({ length: t.rating }).map((_, i) => (
                       <Star
+                        // biome-ignore lint/suspicious/noArrayIndexKey: index identifies a star in a fixed-length decorative list
                         key={i}
                         className="size-3 fill-amber-400 text-amber-400"
                       />

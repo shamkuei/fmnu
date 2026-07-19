@@ -3,15 +3,15 @@
 import { cookies } from "next/headers";
 import z from "zod";
 import { db } from "@/db/index";
-import { ForbiddenException } from "@/lib/errors";
 import { verifyOrigin } from "@/lib/csrf";
+import { ForbiddenException } from "@/lib/errors";
 import { getSessionFromSessionId } from "@/modules/auth/authorizer.service";
 import {
   createRestaurant,
   deleteRestaurant,
   getRestaurantById,
-  getRestaurantsForAdmin,
   getRestaurantStats,
+  getRestaurantsForAdmin,
   isRestaurantAdmin,
   updateRestaurant,
 } from "@/modules/restaurants/restaurants.service";

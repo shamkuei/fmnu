@@ -16,6 +16,17 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Verify deploy secrets are set
+        env:
+          HOST: ${{ secrets.SERVER_HOST }}
+          USER: ${{ secrets.SERVER_USER }}
+          KEY: ${{ secrets.SERVER_SSH_KEY }}
+        run: |
+          if [ -z "$HOST" ] || [ -z "$USER" ] || [ -z "$KEY" ]; then
+            echo "::error::Missing deploy secrets. Add SERVER_HOST, SERVER_USER, and SERVER_SSH_KEY under Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+
       - uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SERVER_HOST }}

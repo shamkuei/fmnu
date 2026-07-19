@@ -1,11 +1,14 @@
 "use server";
 
+import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { db } from "@/db/index";
-import { categories as categoriesTable, products as productsTable } from "@/db/schema";
-import { eq } from "drizzle-orm";
-import { ForbiddenException } from "@/lib/errors";
+import {
+  categories as categoriesTable,
+  products as productsTable,
+} from "@/db/schema";
 import { verifyOrigin } from "@/lib/csrf";
+import { ForbiddenException } from "@/lib/errors";
 import { getSessionFromSessionId } from "@/modules/auth/authorizer.service";
 import {
   createCategory,
