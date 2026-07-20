@@ -3,7 +3,7 @@ import * as schema from "./schema";
 
 export const relations = defineRelations(schema, (r) => ({
   users: {
-    sessions: r.many.sessions(),
+    sessions: r.many.sessions({ alias: "user" }),
     verifications: r.many.verifications(),
     restaurantAdmins: r.many.restaurantAdmins(),
   },
@@ -12,6 +12,13 @@ export const relations = defineRelations(schema, (r) => ({
     user: r.one.users({
       from: r.sessions.userId,
       to: r.users.id,
+      alias: "user",
+    }),
+    effectiveUser: r.one.users({
+      from: r.sessions.impersonatedUserId,
+      to: r.users.id,
+      alias: "effectiveUser",
+      optional: true,
     }),
   },
 

@@ -1,6 +1,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getMeAction } from "@/actions/auth";
+import { ImpersonationBanner } from "@/components/admin/impersonation-banner";
 
 export default async function AdminLayout({
   children,
@@ -13,9 +14,31 @@ export default async function AdminLayout({
   const headersList = await headers();
   const pathname = headersList.get("x-pathname") ?? "";
 
-  if (!user.firstName && !pathname.includes("/complete-profile")) {
+  // Only push the real (non-impersonating) user through profile completion.
+  if (
+    !user.currentSession?.isImpersonating &&
+    !user.firstName &&
+    !pathname.includes("/complete-profile")
+  ) {
     redirect("/admin/complete-profile");
   }
 
-  return children;
+  const impersonating = user.currentSession?.isImpersonating
+    ? {
+        name: `${user.firstName} ${user.lastName}`.trim(),
+        phone: user.phone,
+      }
+    : null;
+
+  return (
+    <>
+      {impersonating && (
+        <ImpersonationBanner
+          name={impersonating.name}
+          phone={impersonating.phone}
+        />
+      )}
+      {children}
+    </>
+  );
 }

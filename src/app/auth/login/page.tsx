@@ -6,6 +6,7 @@ import {
   checkCodeAction,
   getMeAction,
   otpLoginAction,
+  passwordLoginAction,
   requestOtpAction,
 } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
@@ -13,14 +14,24 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+type Mode = "password" | "otp";
+
 export default function LoginPage() {
   const router = useRouter();
-  const [step, setStep] = useState<"phone" | "code">("phone");
+  const [mode, setMode] = useState<Mode>("password");
+
+  // Shared
   const [phone, setPhone] = useState("");
-  const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // OTP-only
+  const [step, setStep] = useState<"phone" | "code">("phone");
+  const [code, setCode] = useState("");
   const [codeValid, setCodeValid] = useState<boolean | null>(null);
+
+  // Password-only
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
     getMeAction().then((user) => {
@@ -28,14 +39,33 @@ export default function LoginPage() {
     });
   }, [router]);
 
+  function redirectAfterLogin() {
+    const params = new URLSearchParams(window.location.search);
+    router.push(params.get("callbackUrl") || "/admin");
+  }
+
+  async function handlePasswordLogin(e: React.FormEvent) {
+    e.preventDefault();
+    if (!phone.trim() || !password) return;
+    setLoading(true);
+    setError("");
+    try {
+      await passwordLoginAction(phone.trim(), password);
+      redirectAfterLogin();
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "ورود ناموفق بود");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   async function handleRequestOtp(e: React.FormEvent) {
     e.preventDefault();
     if (!phone.trim()) return;
     setLoading(true);
     setError("");
-
     try {
-      await requestOtpAction(phone);
+      await requestOtpAction(phone.trim());
       setStep("code");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "ارسال کد ناموفق بود");
@@ -57,16 +87,14 @@ export default function LoginPage() {
     }
   }
 
-  async function handleLogin(e: React.FormEvent) {
+  async function handleOtpLogin(e: React.FormEvent) {
     e.preventDefault();
     if (code.length !== 6) return;
     setLoading(true);
     setError("");
-
     try {
       await otpLoginAction(phone, code);
-      const params = new URLSearchParams(window.location.search);
-      router.push(params.get("callbackUrl") || "/admin");
+      redirectAfterLogin();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "ورود ناموفق بود");
     } finally {
@@ -78,9 +106,38 @@ export default function LoginPage() {
     <main className="flex min-h-screen items-center justify-center px-4">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle className="text-center text-xl">
-            {step === "phone" ? "ورود به حساب" : "کد تأیید"}
-          </CardTitle>
+          <CardTitle className="text-center text-xl">ورود به حساب</CardTitle>
+          <div className="mx-auto mt-2 flex rounded-lg bg-muted p-1 text-sm">
+            <button
+              type="button"
+              onClick={() => {
+                setMode("password");
+                setError("");
+              }}
+              className={`rounded-md px-3 py-1.5 transition-colors ${
+                mode === "password"
+                  ? "bg-background font-medium text-foreground shadow-sm"
+                  : "text-muted-foreground"
+              }`}
+            >
+              رمز عبور
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setMode("otp");
+                setStep("phone");
+                setError("");
+              }}
+              className={`rounded-md px-3 py-1.5 transition-colors ${
+                mode === "otp"
+                  ? "bg-background font-medium text-foreground shadow-sm"
+                  : "text-muted-foreground"
+              }`}
+            >
+              کد یک‌بار مصرف
+            </button>
+          </div>
         </CardHeader>
         <CardContent>
           {error && (
@@ -89,7 +146,42 @@ export default function LoginPage() {
             </div>
           )}
 
-          {step === "phone" ? (
+          {mode === "password" ? (
+            <form onSubmit={handlePasswordLogin} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="phone">شماره موبایل</Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  dir="ltr"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="09121234567"
+                  className="h-11 text-left font-mono text-base"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">رمز عبور</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  dir="ltr"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="h-11 text-left font-base"
+                />
+              </div>
+              <Button
+                type="submit"
+                disabled={loading || !phone.trim() || !password}
+                className="h-11 w-full"
+                size="lg"
+              >
+                {loading ? "در حال ورود..." : "ورود"}
+              </Button>
+            </form>
+          ) : step === "phone" ? (
             <form onSubmit={handleRequestOtp} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="phone">شماره موبایل</Label>
@@ -113,7 +205,7 @@ export default function LoginPage() {
               </Button>
             </form>
           ) : (
-            <form onSubmit={handleLogin} className="space-y-4">
+            <form onSubmit={handleOtpLogin} className="space-y-4">
               <p className="text-center text-sm text-muted-foreground">
                 کد ارسال شده به{" "}
                 <span dir="ltr" className="font-mono text-foreground">

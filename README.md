@@ -31,9 +31,14 @@ With `NO_SMS=true` (the default in `.env.example`), OTP codes are printed to the
 | `NEXT_PUBLIC_DOMAIN` | Public domain used to build `/r/<slug>` URLs | `fmnu.ir` |
 | `NO_SMS` | When not `false`, OTP codes are logged instead of sent | `true` |
 | `SMS_USERNAME` / `SMS_PASSWORD` / `SMS_FROM` | Payamak Panel credentials (required when `NO_SMS=false`) | — |
+| `ROOT_PHONE` / `ROOT_PASSWORD` | Permanent platform superadmin, created/updated on every boot (sign in with phone + password). Change `ROOT_PASSWORD` to rotate. | — |
 | `NODE_ENV` | Standard Next.js | `development` |
 
 See [`.env.example`](./.env.example) for the full list.
+
+> **Auth:** sign in with **phone + password** (works without SMS) or, when the SMS
+> panel is active, with a one-time code. The `ROOT_*` env creates a platform
+> superadmin that can manage users and impersonate them from `/admin/users`.
 
 ## Production deployment (Docker)
 

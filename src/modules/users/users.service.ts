@@ -1,5 +1,5 @@
 import { db } from "@/db/index";
-import { users } from "@/db/schema";
+import { type UserRole, users } from "@/db/schema";
 
 export const userRolesWith = {
   restaurantAdmins: {
@@ -32,4 +32,10 @@ export async function findOrCreateByPhone(phone: string) {
   const fullUser = await getFullUser(user.id);
   if (!fullUser) throw new Error("Failed to retrieve user after creation");
   return fullUser;
+}
+
+export function isPlatformAdmin(
+  user: { role: UserRole | null } | null | undefined,
+): user is { role: "superadmin" } {
+  return user?.role === "superadmin";
 }

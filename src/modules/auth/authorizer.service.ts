@@ -13,6 +13,9 @@ export async function getSessionFromSessionId(sessionId?: string) {
       user: {
         with: userRolesWith,
       },
+      effectiveUser: {
+        with: userRolesWith,
+      },
     },
   });
 
@@ -24,5 +27,25 @@ export async function getSessionFromSessionId(sessionId?: string) {
     throw new UnauthorizedException("INVALID_SESSION");
   }
 
-  return session;
+  // If this session is impersonating, the effective user is the impersonated
+  // user (so the admin sees exactly that user's access); userId/realUserId still
+  // identifies the real (superadmin) session owner for gating + switch-back.
+  const impersonatingUser = session.impersonatedUserId
+    ? session.effectiveUser
+    : null;
+
+  if (impersonatingUser) {
+    return {
+      ...session,
+      user: impersonatingUser,
+      isImpersonating: true,
+      realUserId: session.userId,
+    };
+  }
+
+  return {
+    ...session,
+    isImpersonating: false,
+    realUserId: session.userId,
+  };
 }

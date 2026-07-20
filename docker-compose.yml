@@ -10,6 +10,9 @@ services:
       - SMS_USERNAME=${SMS_USERNAME}
       - SMS_PASSWORD=${SMS_PASSWORD}
       - SMS_FROM=${SMS_FROM}
+      # Platform superadmin — created/updated on boot. Set in the prod .env.
+      - ROOT_PHONE=${ROOT_PHONE:-}
+      - ROOT_PASSWORD=${ROOT_PASSWORD:-}
     restart: unless-stopped
 
   proxy:

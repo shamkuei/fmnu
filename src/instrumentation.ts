@@ -8,4 +8,11 @@ export async function register() {
   const { db } = await import("./db/index");
   migrate(db, { migrationsFolder: "./drizzle" });
   console.log("migration completed");
+
+  // Ensure the permanent platform superadmin exists (env-driven, idempotent).
+  // Runs after migrations so the role/password columns are present.
+  const { ensureRootSuperadmin } = await import(
+    "./modules/auth/bootstrap.service"
+  );
+  await ensureRootSuperadmin();
 }

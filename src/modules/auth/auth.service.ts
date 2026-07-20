@@ -1,3 +1,4 @@
+import { eq } from "drizzle-orm";
 import { db } from "@/db/index";
 import { sessions } from "@/db/schema";
 import type { UserWithRoles } from "./complete-user.type";
@@ -11,4 +12,15 @@ export async function loginUser(user: Omit<UserWithRoles, "currentSession">) {
     })
     .returning();
   return { sessionId: session.id, user };
+}
+
+/** Sets or clears (null) the impersonation target on a session. */
+export async function setImpersonation(
+  sessionId: string,
+  targetUserId: string | null,
+) {
+  await db
+    .update(sessions)
+    .set({ impersonatedUserId: targetUserId })
+    .where(eq(sessions.id, sessionId));
 }

@@ -9,6 +9,8 @@ import {
 } from "drizzle-orm/sqlite-core";
 import type { VerificationReason } from "@/modules/verification/reasons";
 
+export type UserRole = "superadmin";
+
 // ============================================================================
 // Users & Auth
 // ============================================================================
@@ -22,6 +24,10 @@ export const users = sqliteTable("user", {
   lastName: text("last_name").notNull().default(""),
   email: text(),
   imageUrl: text("image_url"),
+  // null = regular restaurant owner; "superadmin" = platform admin (useradmin).
+  role: text().$type<UserRole>(),
+  // null for OTP-only users; argon2id hash for password users.
+  passwordHash: text("password_hash"),
   hasLogined: integer({ mode: "boolean" }).default(false).notNull(),
   createdAt: integer("created_at", { mode: "timestamp" })
     .default(sql`(unixepoch())`)
@@ -37,6 +43,14 @@ export const sessions = sqliteTable(
     userId: text("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
+    // When set, this session is impersonating another user; the effective user
+    // is this id, while userId remains the real (superadmin) session owner.
+    impersonatedUserId: text("impersonated_user_id").references(
+      () => users.id,
+      {
+        onDelete: "set null",
+      },
+    ),
     expireAt: integer("expire_at", { mode: "timestamp" }),
     createdAt: integer("created_at", { mode: "timestamp" })
       .default(sql`(unixepoch())`)
