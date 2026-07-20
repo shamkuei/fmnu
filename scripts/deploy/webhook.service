@@ -1,0 +1,17 @@
+[Unit]
+Description=FMNU push-deploy webhook receiver
+Documentation=file:///opt/fmnu-deploy
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Runs as root so it can invoke `docker compose`. The only input it trusts is
+# a request that carries a valid HMAC signature (see webhook.py).
+EnvironmentFile=/etc/fmnu-deploy.env
+ExecStart=/usr/bin/python3 /opt/fmnu-deploy/webhook.py
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
