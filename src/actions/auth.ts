@@ -1,7 +1,7 @@
 "use server";
 
 import { eq } from "drizzle-orm";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import z from "zod";
 import { db } from "@/db/index";
 import { sessions, users } from "@/db/schema";
@@ -20,6 +20,18 @@ import { requestOtp } from "@/modules/auth/flows/request-otp";
 import { userRolesWith } from "@/modules/users/users.service";
 import { resendCode } from "@/modules/verification/verification.service";
 
+/**
+ * Whether the current request arrived over HTTPS. The session cookie's `secure`
+ * flag must mirror this: a Secure cookie is silently rejected by the browser
+ * over plain HTTP (e.g. when the app is reached directly on :3000 without a
+ * TLS-terminating proxy). Behind a proxy (Caddy/Cloudflare/nginx) we trust the
+ * standard `x-forwarded-proto` header.
+ */
+async function isRequestHttps(): Promise<boolean> {
+  const proto = (await headers()).get("x-forwarded-proto");
+  return proto?.split(",")[0].trim().toLowerCase() === "https";
+}
+
 export async function requestOtpAction(phone: string) {
   await verifyOrigin();
   return requestOtp({ rawInput: { phone } });
@@ -36,7 +48,7 @@ export async function otpLoginAction(phone: string, code: string) {
   const cookieStore = await cookies();
   cookieStore.set("session-id", result.sessionId, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: await isRequestHttps(),
     sameSite: "lax",
     path: "/",
     maxAge: 30 * 24 * 60 * 60,
@@ -52,7 +64,7 @@ export async function passwordLoginAction(phone: string, password: string) {
   const cookieStore = await cookies();
   cookieStore.set("session-id", result.sessionId, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: await isRequestHttps(),
     sameSite: "lax",
     path: "/",
     maxAge: 30 * 24 * 60 * 60,

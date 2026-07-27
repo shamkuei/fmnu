@@ -4,8 +4,8 @@ import { randomBytes } from "node:crypto";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { verifyOrigin } from "@/lib/csrf";
+import { UPLOAD_DIR } from "@/lib/uploads";
 
-const UPLOAD_DIR = join(process.cwd(), "public", "uploads");
 const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 

@@ -47,7 +47,7 @@ export default async function LandingPage() {
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent" />
         <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-muted/50 px-3 py-1 text-xs text-muted-foreground">
           <Zap className="size-3" />
-          رایگان و بدون نیاز به نصب
+          دمو رایگان و بدون نیاز به نصب
         </div>
         <h1 className="mb-6 max-w-3xl text-4xl font-bold leading-tight tracking-tight text-foreground sm:text-6xl lg:text-7xl">
           منوی دیجیتال رستورانت رو
@@ -67,7 +67,7 @@ export default async function LandingPage() {
               <a href="/auth/login?action=signup" />
             }
           >
-            شروع رایگان
+            شروع دمو رایگان
             <ArrowLeft className="size-4" />
           </Button>
           <Button
@@ -142,10 +142,10 @@ export default async function LandingPage() {
               </div>
               <div>
                 <div className="text-3xl font-bold text-foreground sm:text-4xl">
-                  رایگان
+                  دمو رایگان
                 </div>
                 <div className="mt-1 text-sm text-muted-foreground">
-                  بدون هزینه و بدون محدودیت
+                  برای آشنایی و تست
                 </div>
               </div>
               <div>
@@ -278,8 +278,8 @@ export default async function LandingPage() {
           </div>
           <div className="space-y-3">
             <FaqItem
-              question="واقعاً رایگانه؟"
-              answer="بله! استفاده از فستمنو کاملاً رایگانه. ثبت‌نام، ساخت منو، QR کد و آپدیت‌های نامحدود بدون هیچ هزینه‌ای انجام میشه."
+              question="دمو رایگان چیه؟"
+              answer="با دمو رایگان می‌تونی فستمنو رو کامل امتحان کنی: ثبت‌نام، ساخت منو، QR کد و آپدیت منو بدون هزینه قابل تست هستن تا با سرویس آشنا بشی."
             />
             <FaqItem
               question="نیاز به اپلیکیشن داره؟"
@@ -308,7 +308,8 @@ export default async function LandingPage() {
             همین الان شروع کن
           </h2>
           <p className="mx-auto mb-8 max-w-md text-primary-foreground/70">
-            رایگان ثبت‌نام کن و منوی دیجیتال رستورانت رو تو چند دقیقه بساز.
+            با دمو رایگان ثبت‌نام کن و منوی دیجیتال رستورانت رو تو چند دقیقه
+            بساز.
           </p>
           <Button
             variant="outline"
@@ -320,7 +321,7 @@ export default async function LandingPage() {
               <a href="/auth/login?action=signup" />
             }
           >
-            ساخت منوی رایگان
+            ساخت منو با دمو رایگان
             <ArrowLeft className="size-4" />
           </Button>
         </div>
